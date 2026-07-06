@@ -3,7 +3,7 @@
 FoxBike is a lightweight, private, and feature-rich cycling computer for Android. Designed for cyclists who value their privacy, it provides real-time tracking, offline maps, and essential safety tools without any data leaving your device.
 
 ## 📥 Downloads
-You can find the latest stable version (APK) in the [Releases](https://github.com/your-username/FoxBike/releases) section of this repository.
+You can find the latest stable version (APK) in the [Releases](https://github.com/MCI49312/FoxBike/releases) section of this repository.
 
 ## 🌟 Key Features
 
