@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoxBike</string>
+    <string name="speed_label">Viteză</string>
+    <string name="odometer_label">Odométer</string>
+    <string name="trip_label">Traseu</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="confirm_stop_title">Opriți sesiunea?</string>
+    <string name="confirm_stop_message">Sunteți sigur că doriți să opriți urmărirea?</string>
+    <string name="yes">Da</string>
+    <string name="no">Nu</string>
+    <string name="unit_km">km</string>
+    <string name="unit_mi">mi</string>
+    <string name="permission_denied">Permisiunea de locație este necesară pentru urmărirea vitezei.</string>
+    <string name="settings">Setări</string>
+    <string name="language">Limbă</string>
+    <string name="reset_odometer">Resetați odométerul</string>
+    <string name="units">Unități</string>
+    <string name="version">Versiunea 1.0</string>
+    <string name="enter_code">Introduceți codul secret</string>
+    <string name="demo_mode_enabled">Modul Demo activat</string>
+    <string name="demo_mode_disabled">Modul Demo dezactivat</string>
+    <string name="fake_speed">Viteză falsă</string>
+    <string name="fake_odometer">Odométer fals</string>
+    <string name="fake_trip">Traseu fals</string>
+    <string name="save">Salvează</string>
+    <string name="cancel">Anulează</string>
+    <string name="map">Hartă</string>
+    <string name="use_maps_beta">Folosiți hărți (Beta)</string>
+    <string name="no_telemetry_note">Fără telemetrie, fără jurnal. Datele dvs. rămân pe dispozitiv.</string>
+</resources>

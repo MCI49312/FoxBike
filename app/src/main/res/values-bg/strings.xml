@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoxBike</string>
+    <string name="speed_label">Скорост</string>
+    <string name="odometer_label">Одометър</string>
+    <string name="trip_label">Пътуване</string>
+    <string name="start_button">Старт</string>
+    <string name="stop_button">Стоп</string>
+    <string name="unit_kmh">км/ч</string>
+    <string name="unit_mph">mph</string>
+    <string name="confirm_stop_title">Спиране на сесията?</string>
+    <string name="confirm_stop_message">Сигурни ли сте, че искате да спрете проследяването?</string>
+    <string name="yes">Да</string>
+    <string name="no">Не</string>
+    <string name="unit_km">км</string>
+    <string name="unit_mi">mi</string>
+    <string name="permission_denied">Необходим е достъп до местоположението за проследяване на скоростта.</string>
+    <string name="settings">Настройки</string>
+    <string name="language">Език</string>
+    <string name="reset_odometer">Нулиране на одометъра</string>
+    <string name="units">Единици</string>
+    <string name="version">Версия 1.0</string>
+    <string name="enter_code">Въведете таен код</string>
+    <string name="demo_mode_enabled">Демо режимът е активиран</string>
+    <string name="demo_mode_disabled">Демо режимът е деактивиран</string>
+    <string name="fake_speed">Фалшива скорост</string>
+    <string name="fake_odometer">Фалшив одометър</string>
+    <string name="fake_trip">Фалшиво пътуване</string>
+    <string name="save">Запази</string>
+    <string name="cancel">Отказ</string>
+    <string name="map">Карта</string>
+    <string name="use_maps_beta">Активиране на карти (Beta)</string>
+    <string name="no_telemetry_note">Без телеметрия, без логове. Вашите данни остават на вашето устройство.</string>
+</resources>

@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoxBike</string>
+    <string name="speed_label">Rychlost</string>
+    <string name="odometer_label">Odometr</string>
+    <string name="trip_label">Trasa</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="confirm_stop_title">Zastavit měření?</string>
+    <string name="confirm_stop_message">Opravdu chcete zastavit sledování?</string>
+    <string name="yes">Ano</string>
+    <string name="no">Ne</string>
+    <string name="unit_km">km</string>
+    <string name="unit_mi">mi</string>
+    <string name="permission_denied">Pro sledování rychlosti je vyžadováno povolení polohy.</string>
+    <string name="settings">Nastavení</string>
+    <string name="language">Jazyk</string>
+    <string name="reset_odometer">Vynulovat odometr</string>
+    <string name="units">Jednotky</string>
+    <string name="version">Verze 1.0</string>
+    <string name="enter_code">Zadejte tajný kód</string>
+    <string name="demo_mode_enabled">Demo režim zapnut</string>
+    <string name="demo_mode_disabled">Demo režim vypnut</string>
+    <string name="fake_speed">Simulovaná rychlost</string>
+    <string name="fake_odometer">Simulovaný odometr</string>
+    <string name="fake_trip">Simulovaná trasa</string>
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="map">Mapa</string>
+    <string name="use_maps_beta">Povolit mapy (Beta)</string>
+    <string name="no_telemetry_note">Bez telemetrie, bez logů. Vaše data zůstávají ve vašem zařízení.</string>
+</resources>

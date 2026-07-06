@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoxBike</string>
+    <string name="speed_label">速度</string>
+    <string name="odometer_label">里程表</string>
+    <string name="trip_label">本次行程</string>
+    <string name="start_button">开始</string>
+    <string name="stop_button">停止</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="confirm_stop_title">停止记录？</string>
+    <string name="confirm_stop_message">您确定要停止追踪吗？</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="unit_km">km</string>
+    <string name="unit_mi">mi</string>
+    <string name="permission_denied">速度追踪需要位置权限。</string>
+    <string name="settings">设置</string>
+    <string name="language">语言</string>
+    <string name="reset_odometer">重置里程表</string>
+    <string name="units">单位</string>
+    <string name="version">版本 1.0</string>
+    <string name="enter_code">输入秘密代码</string>
+    <string name="demo_mode_enabled">演示模式已开启</string>
+    <string name="demo_mode_disabled">演示模式已关闭</string>
+    <string name="fake_speed">模拟速度</string>
+    <string name="fake_odometer">模拟里程表</string>
+    <string name="fake_trip">模拟行程</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="map">地图</string>
+    <string name="use_maps_beta">使用地图 (Beta)</string>
+    <string name="no_telemetry_note">无遥测，无日志。您的数据保留在设备上。</string>
+</resources>

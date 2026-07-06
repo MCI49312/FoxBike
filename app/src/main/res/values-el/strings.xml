@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoxBike</string>
+    <string name="speed_label">Ταχύτητα</string>
+    <string name="odometer_label">Οδόμετρο</string>
+    <string name="trip_label">Διαδρομή</string>
+    <string name="start_button">Έναρξη</string>
+    <string name="stop_button">Διακοπή</string>
+    <string name="unit_kmh">χλμ/ώρα</string>
+    <string name="unit_mph">mph</string>
+    <string name="confirm_stop_title">Διακοπή συνεδρίας;</string>
+    <string name="confirm_stop_message">Είστε σίγουροι ότι θέλετε να διακόψετε την καταγραφή;</string>
+    <string name="yes">Ναι</string>
+    <string name="no">Όχι</string>
+    <string name="unit_km">χλμ</string>
+    <string name="unit_mi">mi</string>
+    <string name="permission_denied">Απαιτείται άδεια τοποθεσίας για την καταγραφή ταχύτητας.</string>
+    <string name="settings">Ρυθμίσεις</string>
+    <string name="language">Γλώσσα</string>
+    <string name="reset_odometer">Επαναφορά οδομέτρου</string>
+    <string name="units">Μονάδες</string>
+    <string name="version">Έκδοση 1.0</string>
+    <string name="enter_code">Εισάγετε μυστικό κωδικό</string>
+    <string name="demo_mode_enabled">Η λειτουργία Demo ενεργοποιήθηκε</string>
+    <string name="demo_mode_disabled">Η λειτουργία Demo απενεργοποιήθηκε</string>
+    <string name="fake_speed">Ψεύτικη ταχύτητα</string>
+    <string name="fake_odometer">Ψεύτικο οδόμετρο</string>
+    <string name="fake_trip">Ψεύτικη διαδρομή</string>
+    <string name="save">Αποθήκευση</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="map">Χάρτης</string>
+    <string name="use_maps_beta">Ενεργοποίηση χαρτών (Beta)</string>
+    <string name="no_telemetry_note">Χωρίς τηλεμετρία, χωρίς καταγραφές. Τα δεδομένα σας παραμένουν στη συσκευή σας.</string>
+</resources>
