@@ -50,6 +50,7 @@ You can find the latest stable version (APK) in the [Releases](https://github.co
 2. Open in Android Studio.
 3. Build and run on your Android device.
 4. Ensure Location Permissions are granted for accurate tracking.
+** Alternatively download APK from releases
 
 ---
 *Ride safe with FoxBike!* 🦊
