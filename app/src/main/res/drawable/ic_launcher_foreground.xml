@@ -3,27 +3,53 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Hill -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M0,108 L108,45 L108,108 Z" />
 
-    <!-- Bicycle Wheels -->
+    <!-- Hill / Ground - Smooth curve -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M42,70m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M78,55m-8,0a8,8 0,1 1,16 0a8,8 0,1 1,-16 0" />
+        android:pathData="M0,95 Q54,95 108,65 L108,108 L0,108 Z" />
 
-    <!-- Frame and Rider -->
+    <!-- Bicycle Components -->
+    <!-- Rear Wheel -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M42,70 L55,70 L72,55 L68,45 L55,45 L42,70 Z" />
+        android:pathData="M35,75m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0 M35,75m-6,0a6,6 0,1 0,12 0a6,6 0,1 0,-12 0" />
+
+    <!-- Front Wheel -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M65,45 L60,25 L70,22 L75,45 Z" />
+        android:pathData="M75,60m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0 M75,60m-6,0a6,6 0,1 0,12 0a6,6 0,1 0,-12 0" />
+
+    <!-- Frame - Connected paths -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M70,18m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+        android:pathData="M35,75 L52,75 L68,52 L50,52 Z" /> <!-- Main triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M52,75 L50,48 M68,52 L75,60 M68,52 L72,45" /> <!-- Seat post, Fork, Handlebar stem -->
+
+    <!-- Handlebars and Seat -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,45 L78,45 M47,48 L53,48" />
+
+    <!-- Rider Silhouette -->
+    <!-- Head -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62,32a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <!-- Body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,48 L60,35 L68,45 L72,45 L62,55 Z" />
+    <!-- Arms -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M60,35 L74,45" />
+    <!-- Legs -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M50,48 L48,65 L55,75 M50,48 L55,60 L52,75" />
 </vector>

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -25,10 +24,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.*
+import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
 import java.io.File
 import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -50,9 +53,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var lastAnnouncedDistance = 0f
 
     // Stopwatch/Timer
-    private var startTimeMillis = 0L
-    private var totalPausedTimeMillis = 0L
-    private var pauseStartTimeMillis = 0L
     private val timerHandler = Handler(Looper.getMainLooper())
     private val timerRunnable = object : Runnable {
         override fun run() {
@@ -63,6 +63,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    // Stopwatch state
+    private var startTimeMillis = 0L
+    private var totalPausedTimeMillis = 0L
+    private var pauseStartTimeMillis = 0L
+
     private lateinit var tvSpeed: TextView
     private lateinit var tvSpeedUnit: TextView
     private lateinit var tvOdometer: TextView
@@ -72,9 +77,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var btnMap: ImageButton
     private lateinit var btnStats: ImageButton
     private lateinit var btnHistory: ImageButton
-    private lateinit var btnSos: Button
     private lateinit var tvWeather: TextView
     private lateinit var tvWind: TextView
+
+    private var lastWeatherLocation: String? = null
+    private var lastWindUnit: String? = null
+    private val weatherHandler = Handler(Looper.getMainLooper())
+    private val weatherRunnable = object : Runnable {
+        override fun run() {
+            refreshWeather()
+            weatherHandler.postDelayed(this, 10 * 60 * 1000) // 10 minutes
+        }
+    }
 
     private lateinit var viewAvgSpeed: View
     private lateinit var viewMaxSpeed: View
@@ -128,6 +142,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
         timerHandler.post(timerRunnable)
+        weatherHandler.post(weatherRunnable)
     }
 
     override fun onInit(status: Int) {
@@ -141,6 +156,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
+        @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 
@@ -157,8 +173,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val useMaps = prefs.getBoolean("useMaps", true)
         btnMap.visibility = if (useMaps) View.VISIBLE else View.GONE
         
-        val sosContact = prefs.getString("sosContact", "")
-        btnSos.visibility = if (!sosContact.isNullOrEmpty()) View.VISIBLE else View.GONE
+        val weatherLoc = prefs.getString("weatherLocation", "Budapest")
+        val windUnit = prefs.getString("windUnit", "km/h")
+        if (weatherLoc != lastWeatherLocation || windUnit != lastWindUnit) {
+            refreshWeather()
+        }
 
         loadOdometer()
         updateUI()
@@ -174,7 +193,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         btnMap = findViewById(R.id.btnMap)
         btnStats = findViewById(R.id.btnStats)
         btnHistory = findViewById(R.id.btnHistory)
-        btnSos = findViewById(R.id.btnSos)
         tvWeather = findViewById(R.id.tvWeather)
         tvWind = findViewById(R.id.tvWind)
 
@@ -212,10 +230,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             val intent = Intent(this, MapActivity::class.java)
             intent.putParcelableArrayListExtra("points", ArrayList(trackedPoints))
             startActivity(intent)
-        }
-        
-        btnSos.setOnClickListener {
-            sendSos()
         }
         
         btnStats.setOnClickListener {
@@ -336,11 +350,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
         if (!prefs.getBoolean("voiceFeedback", false)) return
 
-        // Announce every 1 km
-        if (tripDistance - lastAnnouncedDistance >= 1000) {
-            val distanceKm = (tripDistance / 1000).toInt()
+        // Announce every 1 unit (km or mile)
+        val distanceUnitValue = if (isKmh) 1000f else 1609.34f
+        if (tripDistance - lastAnnouncedDistance >= distanceUnitValue) {
+            val distance = (tripDistance / distanceUnitValue).toInt()
             val speed = if (isKmh) currentSpeedMs * 3.6f else currentSpeedMs * 2.23694f
-            val text = String.format(Locale.getDefault(), "%d kilometers. Speed %.1f", distanceKm, speed)
+            val unitName = if (isKmh) "kilometers" else "miles"
+            val text = String.format(Locale.getDefault(), "%d %s. Speed %.1f", distance, unitName, speed)
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
             lastAnnouncedDistance = tripDistance
         }
@@ -365,17 +381,44 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun sendSos() {
+    private fun refreshWeather() {
         val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
-        val contact = prefs.getString("sosContact", "") ?: return
-        val loc = lastLocation ?: return
+        val location = prefs.getString("weatherLocation", "Budapest") ?: "Budapest"
+        val cityName = location.split(",")[0].trim().replace(" ", "+")
+        val windUnit = prefs.getString("windUnit", "km/h")
+        lastWeatherLocation = location
+        lastWindUnit = windUnit
         
-        val message = "SOS FoxBike! Location: https://www.google.com/maps/search/?api=1&query=${loc.latitude},${loc.longitude}"
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("smsto:$contact")
-            putExtra("sms_body", message)
+        thread {
+            try {
+                val urlString = "https://wttr.in/$cityName?format=j1"
+                val url = URL(urlString)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                val responseText = conn.inputStream.bufferedReader().readText()
+                val json = JSONObject(responseText)
+                
+                val current = json.getJSONArray("current_condition").getJSONObject(0)
+                val temp = current.getDouble("temp_C")
+                val windKmph = current.getDouble("windspeedKmph")
+                val description = current.getJSONArray("weatherDesc").getJSONObject(0).getString("value")
+
+                val displayWindSpeed = when(windUnit) {
+                    "mph" -> windKmph * 0.621371
+                    "m/s" -> windKmph / 3.6
+                    else -> windKmph
+                }
+
+                runOnUiThread {
+                    tvWeather.text = String.format(Locale.getDefault(), "%s: %.1f°C (%s)", location.split(",")[0], temp, description)
+                    tvWind.text = String.format(Locale.getDefault(), "%s: %.1f %s", getString(R.string.wind), displayWindSpeed, windUnit)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    tvWeather.text = "Weather error"
+                }
+            }
         }
-        startActivity(intent)
     }
 
     private fun exportGpx() {
@@ -512,10 +555,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             setStatValue(viewTime, "00:00:00")
             setStatValue(viewCalories, "0 kcal")
         }
-        
-        // Dummy weather for now
-        tvWeather.text = "${getString(R.string.weather)}: 22°C"
-        tvWind.text = "${getString(R.string.wind)}: 5 km/h NW"
     }
 
     private fun loadOdometer() {
@@ -531,6 +570,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onDestroy() {
         super.onDestroy()
         timerHandler.removeCallbacks(timerRunnable)
+        weatherHandler.removeCallbacks(weatherRunnable)
         tts?.stop()
         tts?.shutdown()
         if (isTracking) {

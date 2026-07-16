@@ -18,7 +18,7 @@
     <string name="language">Language</string>
     <string name="reset_odometer">Reset Odometer</string>
     <string name="units">Units</string>
-    <string name="version">Version 1.0</string>
+    <string name="version">Version 2.0</string>
     <string name="enter_code">Enter secret code</string>
     <string name="demo_mode_enabled">Demo Mode Enabled</string>
     <string name="demo_mode_disabled">Demo Mode Disabled</string>
@@ -40,12 +40,13 @@
     <string name="history">History</string>
     <string name="statistics">Statistics</string>
     <string name="weight">User Weight (kg)</string>
+    <string name="wind_unit">Wind Speed Unit</string>
+    <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Are you sure you want to reset the odometer to zero?</string>
     <string name="voice_feedback">Voice Feedback</string>
     <string name="service_reminder">Service Reminder</string>
     <string name="oil_chain_reminder">Time to oil your chain!</string>
-    <string name="sos_contact">SOS Contact Phone</string>
-    <string name="sos_button">SOS</string>
+    <string name="weather_location">Weather Location (City)</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="weather">Weather</string>
     <string name="wind">Wind</string>
@@ -54,4 +55,6 @@
     <string name="service_settings">Service Reminder Settings</string>
     <string name="service_interval">Interval (km)</string>
     <string name="service_message">Reminder Message</string>
+    <string name="stat_placeholder" translatable="false">0.0</string>
+    <string name="odo_format" translatable="false">ODO: %s</string>
 </resources>

@@ -9,7 +9,6 @@
         android:id="@+id/tvLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Label"
         android:textSize="12sp"
         android:textColor="#888888" />
 
@@ -17,7 +16,7 @@
         android:id="@+id/tvValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0"
+        android:text="@string/stat_placeholder"
         android:textSize="18sp"
         android:textStyle="bold" />
 </LinearLayout>

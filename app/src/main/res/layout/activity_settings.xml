@@ -92,14 +92,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sos_contact"
+                android:text="@string/weather_location"
                 android:layout_marginTop="8dp"/>
-            <EditText
-                android:id="@+id/etSosContact"
+            <AutoCompleteTextView
+                android:id="@+id/etWeatherLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:hint="+36..." />
+                android:inputType="text"
+                android:completionThreshold="1"
+                android:hint="Budapest" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wind_unit"
+                android:layout_marginTop="8dp"/>
+            <Spinner
+                android:id="@+id/spinnerWindUnits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

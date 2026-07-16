@@ -18,7 +18,7 @@
     <string name="language">Nyelv</string>
     <string name="reset_odometer">Odométer nullázása</string>
     <string name="units">Mértékegységek</string>
-    <string name="version">Verzió 1.0</string>
+    <string name="version">Verzió 2.0</string>
     <string name="enter_code">Titkos kód megadása</string>
     <string name="demo_mode_enabled">Demó mód bekapcsolva</string>
     <string name="demo_mode_disabled">Demó mód kikapcsolva</string>
@@ -40,12 +40,13 @@
     <string name="history">Előzmények</string>
     <string name="statistics">Statisztika</string>
     <string name="weight">Felhasználó súlya (kg)</string>
+    <string name="wind_unit">Szélsebesség mértékegysége</string>
+    <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Biztosan nullázni szeretné az odométert?</string>
     <string name="voice_feedback">Hangbemondás</string>
     <string name="service_reminder">Szerviz emlékeztető</string>
     <string name="oil_chain_reminder">Ideje megolajozni a láncot!</string>
-    <string name="sos_contact">SOS telefonszám</string>
-    <string name="sos_button">SOS</string>
+    <string name="weather_location">Időjárás helyszíne (Város)</string>
     <string name="dark_mode">Sötét mód</string>
     <string name="weather">Időjárás</string>
     <string name="wind">Szél</string>

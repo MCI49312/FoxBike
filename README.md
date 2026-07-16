@@ -3,7 +3,6 @@
 FoxBike is a lightweight, private, and feature-rich cycling computer for Android. Designed for cyclists who value their privacy, it provides real-time tracking, offline maps, and essential safety tools without any data leaving your device.
 
 ## 📥 Downloads
-You can find the latest stable version (APK) in the [Releases](https://github.com/MCI49312/FoxBike/releases) section of this repository.
 
 ## 🌟 Key Features
 
@@ -20,10 +19,8 @@ You can find the latest stable version (APK) in the [Releases](https://github.co
 - **No Telemetry**: Maps are cached locally; no tracking data is sent to external servers.
 
 ### 🛡️ Safety & Tools
-- **SOS Button**: Quick-access emergency button that prepares an SMS with your exact Google Maps GPS coordinates to a pre-set contact.
 - **Service Reminder**: Customizable notifications (distance-based) to remind you about chain oiling or general bike maintenance.
 - **Voice Feedback**: Periodic audio announcements of your distance and speed so you can keep your eyes on the road.
-- **Weather & Wind Info**: Glance at current conditions before or during your ride.
 
 ### ⚙️ Customization
 - **Multi-Language Support**: Fully translated into English, Hungarian, German, Romanian, Polish, Bulgarian, Greek, Slovak, Czech, Chinese, Japanese, Serbian, and Croatian.
@@ -43,7 +40,6 @@ You can find the latest stable version (APK) in the [Releases](https://github.co
 - **Location Services**: Google Play Services Location
 
 ## 🐣 Secret Features (Easter Egg)
-- **Demo Mode**: Go to Settings, scroll to the bottom, and click on the **Version 1.0** text 7 times. Enter code `1900` to enable a hidden Demo Mode where you can simulate speed and distances for testing. Enter `1901` to disable it.
 
 ## 🚀 Installation
 1. Clone the repository.

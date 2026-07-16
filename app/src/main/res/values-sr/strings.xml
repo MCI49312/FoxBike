@@ -8,7 +8,7 @@
     <string name="unit_kmh">км/ч</string>
     <string name="unit_mph">mph</string>
     <string name="confirm_stop_title">Зауставити сесију?</string>
-    <string name="confirm_stop_message">Да ли сте сигурни да желите да зауставите праћење?</string>
+    <string name="confirm_stop_message">Да ли сте сигурни да желите да зауставиτε праћење?</string>
     <string name="yes">Да</string>
     <string name="no">Не</string>
     <string name="unit_km">км</string>
@@ -18,7 +18,7 @@
     <string name="language">Језик</string>
     <string name="reset_odometer">Ресетуј одометар</string>
     <string name="units">Јединице</string>
-    <string name="version">Верзија 1.0</string>
+    <string name="version">Верзија 2.0</string>
     <string name="enter_code">Унесите тајни код</string>
     <string name="demo_mode_enabled">Демо режим је активиран</string>
     <string name="demo_mode_disabled">Демо режим је деактивиран</string>
@@ -30,4 +30,29 @@
     <string name="map">Мапа</string>
     <string name="use_maps_beta">Омогући мапе (Beta)</string>
     <string name="no_telemetry_note">Без телеметрије, без логова. Ваши подаци остају на вашем уређају.</string>
+    <string name="avg_speed">Просечна брзина</string>
+    <string name="max_speed">Максимална брзина</string>
+    <string name="time">Време</string>
+    <string name="calories">Калорије</string>
+    <string name="elevation">Успон</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Настави</string>
+    <string name="history">Историја</string>
+    <string name="statistics">Статистика</string>
+    <string name="weight">Тежина корисника (кг)</string>
+    <string name="wind_unit">Јединица брзине ветра</string>
+    <string name="unit_ms">м/с</string>
+    <string name="confirm_reset_odometer">Да ли сте сигурни да желите да ресетујете одометар на нулу?</string>
+    <string name="voice_feedback">Гласовне информације</string>
+    <string name="service_reminder">Подсетник на сервис</string>
+    <string name="oil_chain_reminder">Време је за подмазивање ланца!</string>
+    <string name="weather_location">Локација времена (град)</string>
+    <string name="dark_mode">Тамни режим</string>
+    <string name="weather">Вреμε</string>
+    <string name="wind">Ветар</string>
+    <string name="export_gpx">Извези GPX</string>
+    <string name="gpx_exported">GPX датотека је извезена у преузимања</string>
+    <string name="service_settings">Подешавања подсетника на сервис</string>
+    <string name="service_interval">Интервал (км)</string>
+    <string name="service_message">Порука подсетника</string>
 </resources>

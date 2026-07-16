@@ -2,7 +2,6 @@ package pixela16.space.foxbike
 
 import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -27,7 +26,7 @@ class MapActivity : AppCompatActivity() {
         enableEdgeToEdge()
         
         // OSMDroid configuration
-        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
+        Configuration.getInstance().load(this, getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
         
         setContentView(R.layout.activity_map)
 
@@ -44,6 +43,7 @@ class MapActivity : AppCompatActivity() {
         map = findViewById(R.id.map)
         map.setMultiTouchControls(true)
 
+        @Suppress("DEPRECATION")
         val points = intent.getParcelableArrayListExtra<GeoPoint>("points") ?: arrayListOf()
         
         if (points.isNotEmpty()) {
@@ -62,6 +62,7 @@ class MapActivity : AppCompatActivity() {
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
+        @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 

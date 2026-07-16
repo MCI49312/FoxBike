@@ -1,7 +1,6 @@
 package pixela16.space.foxbike
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -15,6 +14,9 @@ import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -86,50 +88,61 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        val cbUseMaps = findViewById<CheckBox>(R.id.cbUseMaps)
-        cbUseMaps.isChecked = prefs.getBoolean("useMaps", true)
-        cbUseMaps.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit { putBoolean("useMaps", isChecked) }
+        findViewById<CheckBox>(R.id.cbUseMaps).apply {
+            isChecked = prefs.getBoolean("useMaps", true)
+            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("useMaps", isChecked) } }
         }
 
-        val cbVoiceFeedback = findViewById<CheckBox>(R.id.cbVoiceFeedback)
-        cbVoiceFeedback.isChecked = prefs.getBoolean("voiceFeedback", false)
-        cbVoiceFeedback.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit { putBoolean("voiceFeedback", isChecked) }
+        findViewById<CheckBox>(R.id.cbVoiceFeedback).apply {
+            isChecked = prefs.getBoolean("voiceFeedback", false)
+            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("voiceFeedback", isChecked) } }
         }
 
-        val cbServiceReminder = findViewById<CheckBox>(R.id.cbServiceReminder)
-        cbServiceReminder.isChecked = prefs.getBoolean("serviceReminder", true)
-        cbServiceReminder.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit { putBoolean("serviceReminder", isChecked) }
+        findViewById<CheckBox>(R.id.cbServiceReminder).apply {
+            isChecked = prefs.getBoolean("serviceReminder", true)
+            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("serviceReminder", isChecked) } }
         }
 
         findViewById<Button>(R.id.btnServiceSettings).setOnClickListener {
-            startActivity(Intent(this, ServiceReminderActivity::class.java))
+            startActivity(android.content.Intent(this, ServiceReminderActivity::class.java))
         }
 
-        val cbDarkMode = findViewById<CheckBox>(R.id.cbDarkMode)
-        cbDarkMode.isChecked = prefs.getBoolean("darkModeManual", false)
-        cbDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit { putBoolean("darkModeManual", isChecked) }
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        findViewById<CheckBox>(R.id.cbDarkMode).apply {
+            isChecked = prefs.getBoolean("darkModeManual", false)
+            setOnCheckedChangeListener { _, isChecked ->
+                prefs.edit { putBoolean("darkModeManual", isChecked) }
+                AppCompatDelegate.setDefaultNightMode(if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
 
-        val etSosContact = findViewById<EditText>(R.id.etSosContact)
-        etSosContact.setText(prefs.getString("sosContact", ""))
-        etSosContact.addTextChangedListener {
-            prefs.edit { putString("sosContact", it.toString()) }
+        val etWeatherLocation = findViewById<AutoCompleteTextView>(R.id.etWeatherLocation)
+        etWeatherLocation.setText(prefs.getString("weatherLocation", "Budapest"))
+        
+        val cityAdapter = CityAutocompleteAdapter(this)
+        etWeatherLocation.setAdapter(cityAdapter)
+        
+        etWeatherLocation.addTextChangedListener {
+            prefs.edit { putString("weatherLocation", it.toString()) }
+        }
+
+        val spinnerWindUnits = findViewById<Spinner>(R.id.spinnerWindUnits)
+        val windUnits = arrayOf("km/h", "mph", "m/s")
+        val windUnitsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, windUnits)
+        spinnerWindUnits.adapter = windUnitsAdapter
+        
+        val currentWindUnit = prefs.getString("windUnit", "km/h")
+        spinnerWindUnits.setSelection(windUnits.indexOf(currentWindUnit).coerceAtLeast(0))
+
+        spinnerWindUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                prefs.edit { putString("windUnit", windUnits[position]) }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
         val etWeight = findViewById<EditText>(R.id.etWeight)
         etWeight.setText(prefs.getString("weight", "70"))
-        etWeight.addTextChangedListener {
-            prefs.edit { putString("weight", it.toString()) }
-        }
+        etWeight.addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
 
         findViewById<Button>(R.id.btnResetOdometer).setOnClickListener {
             AlertDialog.Builder(this)
@@ -144,8 +157,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val layoutDemoMode = findViewById<LinearLayout>(R.id.layoutDemoMode)
-        val isDemoEnabled = prefs.getBoolean("demoMode", false)
-        layoutDemoMode.visibility = if (isDemoEnabled) View.VISIBLE else View.GONE
+        layoutDemoMode.visibility = if (prefs.getBoolean("demoMode", false)) View.VISIBLE else View.GONE
 
         val etFakeSpeed = findViewById<EditText>(R.id.etFakeSpeed)
         val etFakeOdometer = findViewById<EditText>(R.id.etFakeOdometer)
@@ -164,16 +176,10 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "Demo values saved", Toast.LENGTH_SHORT).show()
         }
 
-        val tvVersion = findViewById<TextView>(R.id.tvVersion)
-        tvVersion.setOnClickListener {
+        findViewById<TextView>(R.id.tvVersion).setOnClickListener {
             val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 500) {
-                clickCount++
-            } else {
-                clickCount = 1
-            }
+            if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
             lastClickTime = currentTime
-
             if (clickCount == 7) {
                 showCodeDialog()
                 clickCount = 0
@@ -210,5 +216,50 @@ class SettingsActivity : AppCompatActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    private class CityAutocompleteAdapter(context: Context) : ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line), Filterable {
+        private var results: List<String> = arrayListOf()
+
+        override fun getCount(): Int = results.size
+        override fun getItem(index: Int): String? = if (index < results.size) results[index] else null
+
+        override fun getFilter(): Filter {
+            return object : Filter() {
+                override fun performFiltering(constraint: CharSequence?): FilterResults {
+                    val filterResults = FilterResults()
+                    if (constraint != null) {
+                        results = fetchCitySuggestions(constraint.toString())
+                        filterResults.values = results
+                        filterResults.count = results.size
+                    }
+                    return filterResults
+                }
+
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged()
+                    } else {
+                        notifyDataSetInvalidated()
+                    }
+                }
+            }
+        }
+
+        private fun fetchCitySuggestions(query: String): List<String> {
+            val list = mutableListOf<String>()
+            try {
+                val url = URL("https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=5")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.setRequestProperty("User-Agent", "FoxBike-Android-App")
+                val response = conn.inputStream.bufferedReader().readText()
+                val jsonArray = JSONArray(response)
+                for (i in 0 until jsonArray.length()) {
+                    val obj = jsonArray.getJSONObject(i)
+                    list.add(obj.getString("display_name"))
+                }
+            } catch (e: Exception) {}
+            return list
+        }
     }
 }
