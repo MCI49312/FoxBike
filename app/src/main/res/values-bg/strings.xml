@@ -18,7 +18,7 @@
     <string name="language">Език</string>
     <string name="reset_odometer">Нулиране на одометъра</string>
     <string name="units">Единици</string>
-    <string name="version">Версия 2.0</string>
+    <string name="version">Версия 3.0</string>
     <string name="enter_code">Въведете таен код</string>
     <string name="demo_mode_enabled">Демо режимът е активиран</string>
     <string name="demo_mode_disabled">Демо режимът е деактивиран</string>
@@ -39,7 +39,7 @@
     <string name="resume">Продължи</string>
     <string name="history">История</string>
     <string name="statistics">Статистика</string>
-    <string name="weight">Тегло на потребителя (кг)</string>
+    <string name="weight">Тегло</string>
     <string name="wind_unit">Единица за скорост на вятъра</string>
     <string name="unit_ms">м/с</string>
     <string name="confirm_reset_odometer">Сигурни ли сте, че искате да нулирате одометъра?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Настройки за напомняне за сервиз</string>
     <string name="service_interval">Интервал (км)</string>
     <string name="service_message">Съобщение за напомняне</string>
+    <string name="welcome_text">Добре дошли в FoxBike!</string>
+    <string name="next_button">Напред</string>
+    <string name="enter_name">Въведете вашето име</string>
+    <string name="vehicle_type">Тип превозно средство</string>
+    <string name="bicycle">велосипед</string>
+    <string name="e_scooter">електрически скутер</string>
+    <string name="motorcycle">мотоциклет</string>
+    <string name="ready_title">Готови сте!</string>
+    <string name="home_tab">Начало</string>
+    <string name="settings_tab">Настройки</string>
+    <string name="ready_to_ride">Готови ли сте да карате своя %s?</string>
+    <string name="start_trip">Започнете пътуването</string>
+    <string name="stop_trip">Спрете пътуването</string>
+    <string name="trip_stats">Статистика на пътуването</string>
+    <string name="trips">Пътувания</string>
+    <string name="full_app_reset">Пълно нулиране на приложението</string>
+    <string name="confirm_full_reset">Сигурни ли сте, че искате да нулирате всичко? Това ще ви върне в менюто за настройка.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Възстановяване на старото меню</string>
+    <string name="use_new_ui">Използвайте новото меню</string>
+    <string name="confirm_ui_switch">Сигурни ли сте, че искате да смените интерфейса? Приложението ще се рестартира.</string>
+    <string name="statistics_btn">Статистика</string>
+    <string name="edit_name">Промяна на името</string>
+    <string name="edit_vehicle">Промяна на превозното средство</string>
 </resources>

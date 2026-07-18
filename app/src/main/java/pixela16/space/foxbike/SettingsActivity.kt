@@ -1,6 +1,7 @@
 package pixela16.space.foxbike
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
@@ -43,140 +43,125 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
+        // Language Spinner
         val spinnerLanguage = findViewById<Spinner>(R.id.spinnerLanguage)
         val languages = arrayOf(
-            "English", "Magyar", "Deutsch", "Română", "Polski", 
-            "Български", "Ελληνικά", "Slovenčina", "Čeština", 
-            "Srpski", "Hrvatski", "中文", "日本語"
+            "🇺🇸 English", "🇭🇺 Magyar", "🇩🇪 Deutsch", "🇷🇴 Română", "🇵🇱 Polski", 
+            "🇧🇬 Български", "🇬🇷 Ελληνικά", "🇸🇰 Slovenčina", "🇨🇿 Čeština", 
+            "🇷🇸 Srpski", "🇭🇷 Hrvatski", "🇨🇳 中文", "🇯🇵 日本語"
         )
-        val langCodes = arrayOf(
-            "en", "hu", "de", "ro", "pl", 
-            "bg", "el", "sk", "cs", 
-            "sr", "hr", "zh", "ja"
-        )
-        
-        val langAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
-        spinnerLanguage.adapter = langAdapter
-        
-        val langIndex = langCodes.indexOf(currentLang).coerceAtLeast(0)
-        spinnerLanguage.setSelection(langIndex)
-
+        val langCodes = arrayOf("en", "hu", "de", "ro", "pl", "bg", "el", "sk", "cs", "sr", "hr", "zh", "ja")
+        spinnerLanguage.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
+        spinnerLanguage.setSelection(langCodes.indexOf(currentLang).coerceAtLeast(0))
         spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val newLang = langCodes[position]
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                val newLang = langCodes[pos]
                 if (newLang != prefs.getString("language", "en")) {
                     prefs.edit { putString("language", newLang) }
                     updateLocale(newLang)
                     recreate()
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val spinnerUnits = findViewById<Spinner>(R.id.spinnerUnits)
-        val units = arrayOf("km/h", "mph")
-        val unitsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, units)
-        spinnerUnits.adapter = unitsAdapter
-        
-        val isKmh = prefs.getBoolean("isKmh", true)
-        spinnerUnits.setSelection(if (isKmh) 0 else 1)
-
-        spinnerUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit { putBoolean("isKmh", position == 0) }
+        // Vehicle Spinner
+        val spinnerVehicle = findViewById<Spinner>(R.id.spinnerSettingsVehicle)
+        val vehicleIds = arrayOf("bicycle", "e_scooter", "motorcycle")
+        val vehicles = arrayOf(getString(R.string.bicycle), getString(R.string.e_scooter), getString(R.string.motorcycle))
+        spinnerVehicle.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, vehicles)
+        spinnerVehicle.setSelection(vehicleIds.indexOf(prefs.getString("vehicleType", "bicycle")).coerceAtLeast(0))
+        spinnerVehicle.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("vehicleType", vehicleIds[pos]) }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        findViewById<CheckBox>(R.id.cbUseMaps).apply {
-            isChecked = prefs.getBoolean("useMaps", true)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("useMaps", isChecked) } }
-        }
-
-        findViewById<CheckBox>(R.id.cbVoiceFeedback).apply {
-            isChecked = prefs.getBoolean("voiceFeedback", false)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("voiceFeedback", isChecked) } }
-        }
-
-        findViewById<CheckBox>(R.id.cbServiceReminder).apply {
-            isChecked = prefs.getBoolean("serviceReminder", true)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("serviceReminder", isChecked) } }
-        }
-
-        findViewById<Button>(R.id.btnServiceSettings).setOnClickListener {
-            startActivity(android.content.Intent(this, ServiceReminderActivity::class.java))
-        }
-
-        findViewById<CheckBox>(R.id.cbDarkMode).apply {
-            isChecked = prefs.getBoolean("darkModeManual", false)
-            setOnCheckedChangeListener { _, isChecked ->
-                prefs.edit { putBoolean("darkModeManual", isChecked) }
-                AppCompatDelegate.setDefaultNightMode(if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        // Units Spinners
+        val spinnerTemp = findViewById<Spinner>(R.id.spinnerTempUnit)
+        val tempUnits = arrayOf("°C", "°F")
+        spinnerTemp.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, tempUnits)
+        spinnerTemp.setSelection(if (prefs.getString("tempUnit", "°C") == "°C") 0 else 1)
+        spinnerTemp.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("tempUnit", tempUnits[pos]) }
             }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val etWeatherLocation = findViewById<AutoCompleteTextView>(R.id.etWeatherLocation)
-        etWeatherLocation.setText(prefs.getString("weatherLocation", "Budapest"))
-        
-        val cityAdapter = CityAutocompleteAdapter(this)
-        etWeatherLocation.setAdapter(cityAdapter)
-        
-        etWeatherLocation.addTextChangedListener {
-            prefs.edit { putString("weatherLocation", it.toString()) }
-        }
-
-        val spinnerWindUnits = findViewById<Spinner>(R.id.spinnerWindUnits)
+        val spinnerWind = findViewById<Spinner>(R.id.spinnerWindUnit)
         val windUnits = arrayOf("km/h", "mph", "m/s")
-        val windUnitsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, windUnits)
-        spinnerWindUnits.adapter = windUnitsAdapter
-        
-        val currentWindUnit = prefs.getString("windUnit", "km/h")
-        spinnerWindUnits.setSelection(windUnits.indexOf(currentWindUnit).coerceAtLeast(0))
-
-        spinnerWindUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit { putString("windUnit", windUnits[position]) }
+        spinnerWind.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, windUnits)
+        spinnerWind.setSelection(windUnits.indexOf(prefs.getString("windUnit", "km/h")).coerceAtLeast(0))
+        spinnerWind.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("windUnit", windUnits[pos]) }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val etWeight = findViewById<EditText>(R.id.etWeight)
-        etWeight.setText(prefs.getString("weight", "70"))
-        etWeight.addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
+        val spinnerDist = findViewById<Spinner>(R.id.spinnerDistanceUnit)
+        val distUnits = arrayOf("Metric (km)", "Imperial (mi)")
+        spinnerDist.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, distUnits)
+        spinnerDist.setSelection(if (prefs.getBoolean("isKmh", true)) 0 else 1)
+        spinnerDist.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putBoolean("isKmh", pos == 0) }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
 
-        findViewById<Button>(R.id.btnResetOdometer).setOnClickListener {
+        findViewById<EditText>(R.id.etSettingsName).apply {
+            setText(prefs.getString("userName", ""))
+            addTextChangedListener { prefs.edit { putString("userName", it.toString()) } }
+        }
+
+        findViewById<EditText>(R.id.etSettingsWeight).apply {
+            setText(prefs.getString("weight", "70"))
+            addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
+        }
+
+        val btnSwitchUI = findViewById<Button>(R.id.btnSwitchUI)
+        val useOld = prefs.getBoolean("useOldUI", false)
+        btnSwitchUI.text = if (useOld) getString(R.string.use_new_ui) else getString(R.string.use_old_ui)
+        btnSwitchUI.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle(R.string.reset_odometer)
-                .setMessage(R.string.confirm_reset_odometer)
+                .setTitle(R.string.confirm_ui_switch)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    prefs.edit { putFloat("totalOdometer", 0f) }
-                    Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
+                    prefs.edit { putBoolean("useOldUI", !useOld) }
+                    val nextIntent = if (!useOld) Intent(this, OldMainActivity::class.java) else Intent(this, MainActivity::class.java)
+                    startActivity(nextIntent)
+                    finishAffinity()
                 }
                 .setNegativeButton(R.string.no, null)
                 .show()
         }
 
-        val layoutDemoMode = findViewById<LinearLayout>(R.id.layoutDemoMode)
-        layoutDemoMode.visibility = if (prefs.getBoolean("demoMode", false)) View.VISIBLE else View.GONE
-
-        val etFakeSpeed = findViewById<EditText>(R.id.etFakeSpeed)
-        val etFakeOdometer = findViewById<EditText>(R.id.etFakeOdometer)
-        val etFakeTrip = findViewById<EditText>(R.id.etFakeTrip)
-        
-        etFakeSpeed.setText(prefs.getFloat("fakeSpeed", 0f).toString())
-        etFakeOdometer.setText(prefs.getFloat("fakeOdometer", 0f).toString())
-        etFakeTrip.setText(prefs.getFloat("fakeTrip", 0f).toString())
-
-        findViewById<Button>(R.id.btnSaveDemo).setOnClickListener {
-            prefs.edit {
-                putFloat("fakeSpeed", etFakeSpeed.text.toString().toFloatOrNull() ?: 0f)
-                putFloat("fakeOdometer", etFakeOdometer.text.toString().toFloatOrNull() ?: 0f)
-                putFloat("fakeTrip", etFakeTrip.text.toString().toFloatOrNull() ?: 0f)
-            }
-            Toast.makeText(this, "Demo values saved", Toast.LENGTH_SHORT).show()
+        findViewById<Button>(R.id.btnResetOdo).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.reset_odometer)
+                .setMessage(R.string.confirm_reset_odometer)
+                .setPositiveButton(R.string.yes) { _, _ -> prefs.edit { putFloat("totalOdometer", 0f) } }
+                .setNegativeButton(R.string.no, null)
+                .show()
         }
 
-        findViewById<TextView>(R.id.tvVersion).setOnClickListener {
+        findViewById<Button>(R.id.btnFullReset).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.full_app_reset)
+                .setMessage(R.string.confirm_full_reset)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    prefs.edit { clear() }
+                    startActivity(Intent(this, OnboardingActivity::class.java))
+                    finishAffinity()
+                }
+                .setNegativeButton(R.string.no, null)
+                .show()
+        }
+
+        val tvVersion = findViewById<TextView>(R.id.tvSettingsVersion)
+        tvVersion.setOnClickListener {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
             lastClickTime = currentTime
@@ -192,6 +177,7 @@ class SettingsActivity : AppCompatActivity() {
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
+        @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 
@@ -204,15 +190,40 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 val code = input.text.toString()
                 val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
-                if (code == "1900") {
-                    prefs.edit { putBoolean("demoMode", true) }
-                    Toast.makeText(this, R.string.demo_mode_enabled, Toast.LENGTH_SHORT).show()
-                    findViewById<LinearLayout>(R.id.layoutDemoMode).visibility = View.VISIBLE
-                } else if (code == "1901") {
-                    prefs.edit { putBoolean("demoMode", false) }
-                    Toast.makeText(this, R.string.demo_mode_disabled, Toast.LENGTH_SHORT).show()
-                    findViewById<LinearLayout>(R.id.layoutDemoMode).visibility = View.GONE
+                when (code) {
+                    "1900" -> {
+                        prefs.edit { putBoolean("demoMode", true) }
+                        Toast.makeText(this, R.string.demo_mode_enabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1901" -> {
+                        prefs.edit { putBoolean("demoMode", false) }
+                        Toast.makeText(this, R.string.demo_mode_disabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1902" -> {
+                        showSetOdometerDialog()
+                    }
+                    "1903" -> {
+                        prefs.edit { putFloat("totalOdometer", 0f) }
+                        Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
+                    }
                 }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showSetOdometerDialog() {
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        input.hint = "Value in km"
+        AlertDialog.Builder(this)
+            .setTitle("Set Odometer")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val value = input.text.toString().toFloatOrNull() ?: 0f
+                val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+                prefs.edit { putFloat("totalOdometer", value * 1000f) }
+                Toast.makeText(this, "Odometer set to $value km", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

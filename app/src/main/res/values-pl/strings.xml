@@ -18,7 +18,7 @@
     <string name="language">Język</string>
     <string name="reset_odometer">Resetuj drogomierz</string>
     <string name="units">Jednostki</string>
-    <string name="version">Wersja 2.0</string>
+    <string name="version">Wersja 3.0</string>
     <string name="enter_code">Wprowadź tajny kod</string>
     <string name="demo_mode_enabled">Tryb demo włączony</string>
     <string name="demo_mode_disabled">Tryb demo wyłączony</string>
@@ -39,7 +39,7 @@
     <string name="resume">Wznów</string>
     <string name="history">Historia</string>
     <string name="statistics">Statystyki</string>
-    <string name="weight">Waga użytkownika (kg)</string>
+    <string name="weight">Waga</string>
     <string name="wind_unit">Jednostka prędkości wiatru</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Czy na pewno chcesz zresetować drogomierz do zera?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Ustawienia przypomnienia o serwisie</string>
     <string name="service_interval">Interwał (km)</string>
     <string name="service_message">Wiadomość przypomnienia</string>
+    <string name="welcome_text">Witamy w FoxBike!</string>
+    <string name="next_button">Dalej</string>
+    <string name="enter_name">Wpisz swoje imię</string>
+    <string name="vehicle_type">Typ pojazdu</string>
+    <string name="bicycle">rowerze</string>
+    <string name="e_scooter">hulajnodze elektrycznej</string>
+    <string name="motorcycle">motocyklu</string>
+    <string name="ready_title">Jesteś gotowy!</string>
+    <string name="home_tab">Start</string>
+    <string name="settings_tab">Ustawienia</string>
+    <string name="ready_to_ride">Gotowy na przejażdżkę na swoim %s?</string>
+    <string name="start_trip">Rozpocznij trasę</string>
+    <string name="stop_trip">Zatrzymaj trasę</string>
+    <string name="trip_stats">Statystyki trasy</string>
+    <string name="trips">Trasy</string>
+    <string name="full_app_reset">Pełny reset aplikacji</string>
+    <string name="confirm_full_reset">Czy na pewno chcesz zresetować wszystko? Powrócisz do menu konfiguracji.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Przywróć stare menu</string>
+    <string name="use_new_ui">Użyj nowego menu</string>
+    <string name="confirm_ui_switch">Czy na pewno chcesz zmienić interfejs? Aplikacja zostanie uruchomiona ponownie.</string>
+    <string name="statistics_btn">Statystyki</string>
+    <string name="edit_name">Zmień imię</string>
+    <string name="edit_vehicle">Zmień pojazd</string>
 </resources>

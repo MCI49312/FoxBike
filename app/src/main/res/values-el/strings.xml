@@ -18,7 +18,7 @@
     <string name="language">Γλώσσα</string>
     <string name="reset_odometer">Επαναφορά οδομέτρου</string>
     <string name="units">Μονάδες</string>
-    <string name="version">Έκδοση 2.0</string>
+    <string name="version">Έκδοση 3.0</string>
     <string name="enter_code">Εισάγετε μυστικό κωδικό</string>
     <string name="demo_mode_enabled">Η λειτουργία Demo ενεργοποιήθηκε</string>
     <string name="demo_mode_disabled">Η λειτουργία Demo απενεργοποιήθηκε</string>
@@ -39,7 +39,7 @@
     <string name="resume">Συνέχεια</string>
     <string name="history">Ιστορικό</string>
     <string name="statistics">Στατιστικά</string>
-    <string name="weight">Βάρος χρήστη (kg)</string>
+    <string name="weight">Βάρος</string>
     <string name="wind_unit">Μονάδα ταχύτητας ανέμου</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Είστε σίγουροι ότι θέλετε να μηδενίσετε το οδόμετρο;</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Ρυθμίσεις υπενθύμισης συντήρησης</string>
     <string name="service_interval">Διάστημα (km)</string>
     <string name="service_message">Μήνυμα υπενθύμισης</string>
+    <string name="welcome_text">Καλώς ήρθατε στο FoxBike!</string>
+    <string name="next_button">Επόμενο</string>
+    <string name="enter_name">Εισάγετε το όνομά σας</string>
+    <string name="vehicle_type">Τύπος οχήματος</string>
+    <string name="bicycle">ποδήλατό</string>
+    <string name="e_scooter">ηλεκτρικό πατίνι</string>
+    <string name="motorcycle">μοτοσυκλέτα</string>
+    <string name="ready_title">Είστε έτοιμοι!</string>
+    <string name="home_tab">Αρχική</string>
+    <string name="settings_tab">Ρυθμίσεις</string>
+    <string name="ready_to_ride">Είστε έτοιμοι να οδηγήσετε το %s σας;</string>
+    <string name="start_trip">Έναρξη διαδρομής</string>
+    <string name="stop_trip">Διακοπή διαδρομής</string>
+    <string name="trip_stats">Στατιστικά διαδρομής</string>
+    <string name="trips">Διαδρομές</string>
+    <string name="full_app_reset">Πλήρης επαναφορά εφαρμογής</string>
+    <string name="confirm_full_reset">Είστε σίγουροι ότι θέλετε να επαναφέρετε τα πάντα; Αυτό θα σας επιστρέψει στο μενού ρυθμίσεων.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Επαναφορά παλιού μενού</string>
+    <string name="use_new_ui">Χρήση νέου μενού</string>
+    <string name="confirm_ui_switch">Είστε σίγουροι ότι θέλετε να αλλάξετε διεπαφή; Η εφαρμογή θα επανεκκινήσει.</string>
+    <string name="statistics_btn">Στατιστικά</string>
+    <string name="edit_name">Αλλαγή ονόματος</string>
+    <string name="edit_vehicle">Αλλαγή οχήματος</string>
 </resources>

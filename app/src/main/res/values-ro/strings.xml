@@ -18,7 +18,7 @@
     <string name="language">Limbă</string>
     <string name="reset_odometer">Resetați odometrul</string>
     <string name="units">Unități</string>
-    <string name="version">Versiunea 2.0</string>
+    <string name="version">Versiunea 3.0</string>
     <string name="enter_code">Introduceți codul secret</string>
     <string name="demo_mode_enabled">Modul Demo activat</string>
     <string name="demo_mode_disabled">Modul Demo dezactivat</string>
@@ -39,7 +39,7 @@
     <string name="resume">Reluare</string>
     <string name="history">Istoric</string>
     <string name="statistics">Statistici</string>
-    <string name="weight">Greutatea utilizatorului (kg)</string>
+    <string name="weight">Greutate</string>
     <string name="wind_unit">Unitate viteză vânt</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Sunteți sigur că doriți să resetați odometrul la zero?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Setări memento service</string>
     <string name="service_interval">Interval (km)</string>
     <string name="service_message">Mesaj memento</string>
+    <string name="welcome_text">Bine ați venit la FoxBike!</string>
+    <string name="next_button">Înainte</string>
+    <string name="enter_name">Introduceți numele dvs.</string>
+    <string name="vehicle_type">Tip vehicul</string>
+    <string name="bicycle">bicicleta</string>
+    <string name="e_scooter">trotineta electrică</string>
+    <string name="motorcycle">motocicleta</string>
+    <string name="ready_title">Ești gata!</string>
+    <string name="home_tab">Acasă</string>
+    <string name="settings_tab">Setări</string>
+    <string name="ready_to_ride">Ești gata să mergi cu %s ta?</string>
+    <string name="start_trip">Începe traseul</string>
+    <string name="stop_trip">Oprește traseul</string>
+    <string name="trip_stats">Statistici traseu</string>
+    <string name="trips">Trasee</string>
+    <string name="full_app_reset">Resetare completă</string>
+    <string name="confirm_full_reset">Sigur doriți să resetați totul? Aceasta vă va readuce la meniul de configurare.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Restaurare meniu vechi</string>
+    <string name="use_new_ui">Utilizați meniul nou</string>
+    <string name="confirm_ui_switch">Sigur doriți să schimbați interfața? Aplicația se va reporni.</string>
+    <string name="statistics_btn">Statistici</string>
+    <string name="edit_name">Schimbă numele</string>
+    <string name="edit_vehicle">Schimbă vehiculul</string>
 </resources>

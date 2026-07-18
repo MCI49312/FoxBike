@@ -18,7 +18,7 @@
     <string name="language">Nyelv</string>
     <string name="reset_odometer">Odométer nullázása</string>
     <string name="units">Mértékegységek</string>
-    <string name="version">Verzió 2.0</string>
+    <string name="version">Verzió 3.0</string>
     <string name="enter_code">Titkos kód megadása</string>
     <string name="demo_mode_enabled">Demó mód bekapcsolva</string>
     <string name="demo_mode_disabled">Demó mód kikapcsolva</string>
@@ -39,7 +39,7 @@
     <string name="resume">Folytatás</string>
     <string name="history">Előzmények</string>
     <string name="statistics">Statisztika</string>
-    <string name="weight">Felhasználó súlya (kg)</string>
+    <string name="weight">Súly</string>
     <string name="wind_unit">Szélsebesség mértékegysége</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Biztosan nullázni szeretné az odométert?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Szerviz emlékeztető beállításai</string>
     <string name="service_interval">Intervallum (km)</string>
     <string name="service_message">Emlékeztető szövege</string>
+    <string name="welcome_text">Üdvözöljük a FoxBike-ban!</string>
+    <string name="next_button">Tovább</string>
+    <string name="enter_name">Adja meg a nevét</string>
+    <string name="vehicle_type">Jármű típusa</string>
+    <string name="bicycle">bicikli</string>
+    <string name="e_scooter">elektromos roller</string>
+    <string name="motorcycle">motor</string>
+    <string name="ready_title">Készen állsz!</string>
+    <string name="home_tab">Főoldal</string>
+    <string name="settings_tab">Beállítások</string>
+    <string name="ready_to_ride">Készen állsz tekerni a %s-ddel?</string>
+    <string name="start_trip">Túra indítása</string>
+    <string name="stop_trip">Túra leállítása</string>
+    <string name="trip_stats">Túra statisztikák</string>
+    <string name="trips">Túrák</string>
+    <string name="full_app_reset">Teljes visszaállítás</string>
+    <string name="confirm_full_reset">Biztosan mindent vissza szeretnél állítani? Ez visszadob a kezdeti beállításokhoz.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Régi menü visszaállítása</string>
+    <string name="use_new_ui">Új menü használata</string>
+    <string name="confirm_ui_switch">Biztosan átváltasz? Az alkalmazás újraindul.</string>
+    <string name="statistics_btn">Statisztika</string>
+    <string name="edit_name">Név módosítása</string>
+    <string name="edit_vehicle">Jármű módosítása</string>
 </resources>

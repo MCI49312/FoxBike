@@ -18,7 +18,7 @@
     <string name="language">Jezik</string>
     <string name="reset_odometer">Resetiraj odometer</string>
     <string name="units">Jedinice</string>
-    <string name="version">Verzija 2.0</string>
+    <string name="version">Verzija 3.0</string>
     <string name="enter_code">Unesite tajni kod</string>
     <string name="demo_mode_enabled">Demo način je aktiviran</string>
     <string name="demo_mode_disabled">Demo način je deaktiviran</string>
@@ -39,7 +39,7 @@
     <string name="resume">Nastavi</string>
     <string name="history">Povijest</string>
     <string name="statistics">Statistika</string>
-    <string name="weight">Težina korisnika (kg)</string>
+    <string name="weight">Težina</string>
     <string name="wind_unit">Jedinica brzine vjetra</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Jeste li sigurni da želite resetirati odometer na nulu?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Postavke podsjetnika na servis</string>
     <string name="service_interval">Interval (km)</string>
     <string name="service_message">Poruka podsjetnika</string>
+    <string name="welcome_text">Dobrodošli u FoxBike!</string>
+    <string name="next_button">Dalje</string>
+    <string name="enter_name">Unesite svoje ime</string>
+    <string name="vehicle_type">Tip vozila</string>
+    <string name="bicycle">biciklu</string>
+    <string name="e_scooter">električnom romobilu</string>
+    <string name="motorcycle">motociklu</string>
+    <string name="ready_title">Spremni ste!</string>
+    <string name="home_tab">Početna</string>
+    <string name="settings_tab">Postavke</string>
+    <string name="ready_to_ride">Jeste li spremni voziti svoj %s?</string>
+    <string name="start_trip">Započni putovanje</string>
+    <string name="stop_trip">Zaustavi putovanje</string>
+    <string name="trip_stats">Statistika putovanja</string>
+    <string name="trips">Putovanja</string>
+    <string name="full_app_reset">Potpuni reset aplikacije</string>
+    <string name="confirm_full_reset">Jeste li sigurni da želite resetirati sve? To će vas vratiti u izbornik za postavljanje.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Vrati stari izbornik</string>
+    <string name="use_new_ui">Koristi novi izbornik</string>
+    <string name="confirm_ui_switch">Jeste li sigurni da želite promijeniti sučelje? Aplikacija će se ponovno pokrenuti.</string>
+    <string name="statistics_btn">Statistika</string>
+    <string name="edit_name">Promijeni ime</string>
+    <string name="edit_vehicle">Promijeni vozilo</string>
 </resources>

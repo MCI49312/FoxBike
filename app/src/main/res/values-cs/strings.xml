@@ -18,7 +18,7 @@
     <string name="language">Jazyk</string>
     <string name="reset_odometer">Vynulovat odometr</string>
     <string name="units">Jednotky</string>
-    <string name="version">Verze 2.0</string>
+    <string name="version">Verze 3.0</string>
     <string name="enter_code">Zadejte tajný kód</string>
     <string name="demo_mode_enabled">Demo režim zapnut</string>
     <string name="demo_mode_disabled">Demo režim vypnut</string>
@@ -39,7 +39,7 @@
     <string name="resume">Pokračovat</string>
     <string name="history">Historie</string>
     <string name="statistics">Statistiky</string>
-    <string name="weight">Váha uživatele (kg)</string>
+    <string name="weight">Váha</string>
     <string name="wind_unit">Jednotka rychlosti větru</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Opravdu chcete vynulovat odometr?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Nastavení připomínky servisu</string>
     <string name="service_interval">Interval (km)</string>
     <string name="service_message">Zpráva připomínky</string>
+    <string name="welcome_text">Vítejte ve FoxBike!</string>
+    <string name="next_button">Další</string>
+    <string name="enter_name">Zadejte své jméno</string>
+    <string name="vehicle_type">Typ vozidla</string>
+    <string name="bicycle">kole</string>
+    <string name="e_scooter">elektrické koloběžce</string>
+    <string name="motorcycle">motorce</string>
+    <string name="ready_title">Jste připraveni!</string>
+    <string name="home_tab">Domů</string>
+    <string name="settings_tab">Nastavení</string>
+    <string name="ready_to_ride">Jste připraveni jet na svém %s?</string>
+    <string name="start_trip">Zahájit cestu</string>
+    <string name="stop_trip">Zastavit cestu</string>
+    <string name="trip_stats">Statistiky cesty</string>
+    <string name="trips">Cesty</string>
+    <string name="full_app_reset">Úplný reset aplikace</string>
+    <string name="confirm_full_reset">Opravdu chcete vše resetovat? To vás vrátí do menu nastavení.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Obnovit staré menu</string>
+    <string name="use_new_ui">Použít nové menu</string>
+    <string name="confirm_ui_switch">Opravdu chcete změnit rozhraní? Aplikace se restartuje.</string>
+    <string name="statistics_btn">Statistika</string>
+    <string name="edit_name">Změnit jméno</string>
+    <string name="edit_vehicle">Změnit vozidlo</string>
 </resources>

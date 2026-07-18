@@ -18,7 +18,7 @@
     <string name="language">语言</string>
     <string name="reset_odometer">重置里程表</string>
     <string name="units">单位</string>
-    <string name="version">版本 2.0</string>
+    <string name="version">版本 3.0</string>
     <string name="enter_code">输入秘密代码</string>
     <string name="demo_mode_enabled">演示模式已开启</string>
     <string name="demo_mode_disabled">演示模式已关闭</string>
@@ -39,7 +39,7 @@
     <string name="resume">继续</string>
     <string name="history">历史</string>
     <string name="statistics">统计</string>
-    <string name="weight">用户体重 (kg)</string>
+    <string name="weight">体重</string>
     <string name="wind_unit">风速单位</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">您确定要将里程表重置为零吗？</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">保养提醒设置</string>
     <string name="service_interval">间隔 (km)</string>
     <string name="service_message">提醒消息</string>
+    <string name="welcome_text">欢迎来到 FoxBike!</string>
+    <string name="next_button">下一步</string>
+    <string name="enter_name">输入您的姓名</string>
+    <string name="vehicle_type">车辆类型</string>
+    <string name="bicycle">自行车</string>
+    <string name="e_scooter">电动滑板车</string>
+    <string name="motorcycle">摩托车</string>
+    <string name="ready_title">准备就绪!</string>
+    <string name="home_tab">首页</string>
+    <string name="settings_tab">设置</string>
+    <string name="ready_to_ride">准备好骑您的%s了吗？</string>
+    <string name="start_trip">开始行程</string>
+    <string name="stop_trip">停止行程</string>
+    <string name="trip_stats">行程统计</string>
+    <string name="trips">行程</string>
+    <string name="full_app_reset">完全重置应用</string>
+    <string name="confirm_full_reset">您确定要重置所有内容吗？这将返回设置菜单。</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">恢复旧菜单</string>
+    <string name="use_new_ui">使用新菜单</string>
+    <string name="confirm_ui_switch">您确定要切换界面吗？应用将重新启动。</string>
+    <string name="statistics_btn">统计</string>
+    <string name="edit_name">更改姓名</string>
+    <string name="edit_vehicle">更改车辆</string>
 </resources>

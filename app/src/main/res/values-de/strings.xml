@@ -18,7 +18,7 @@
     <string name="language">Sprache</string>
     <string name="reset_odometer">Kilometerzähler zurücksetzen</string>
     <string name="units">Einheiten</string>
-    <string name="version">Version 2.0</string>
+    <string name="version">Version 3.0</string>
     <string name="enter_code">Geheimcode eingeben</string>
     <string name="demo_mode_enabled">Demo-Modus aktiviert</string>
     <string name="demo_mode_disabled">Demo-Modus deaktiviert</string>
@@ -39,7 +39,7 @@
     <string name="resume">Fortsetzen</string>
     <string name="history">Verlauf</string>
     <string name="statistics">Statistiken</string>
-    <string name="weight">Benutzergewicht (kg)</string>
+    <string name="weight">Gewicht</string>
     <string name="wind_unit">Windgeschwindigkeit Einheit</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Sind Sie sicher, dass Sie den Kilometerzähler auf Null zurücksetzen möchten?</string>
@@ -55,4 +55,29 @@
     <string name="service_settings">Service-Erinnerung Einstellungen</string>
     <string name="service_interval">Intervall (km)</string>
     <string name="service_message">Erinnerungsnachricht</string>
+    <string name="welcome_text">Willkommen bei FoxBike!</string>
+    <string name="next_button">Weiter</string>
+    <string name="enter_name">Geben Sie Ihren Namen ein</string>
+    <string name="vehicle_type">Fahrzeugtyp</string>
+    <string name="bicycle">Fahrrad</string>
+    <string name="e_scooter">E-Scooter</string>
+    <string name="motorcycle">Motorrad</string>
+    <string name="ready_title">Sie sind bereit!</string>
+    <string name="home_tab">Start</string>
+    <string name="settings_tab">Einstellungen</string>
+    <string name="ready_to_ride">Bereit für eine Fahrt mit Ihrem %s?</string>
+    <string name="start_trip">Trip starten</string>
+    <string name="stop_trip">Trip stoppen</string>
+    <string name="trip_stats">Trip-Statistiken</string>
+    <string name="trips">Fahrten</string>
+    <string name="full_app_reset">Vollständiger Reset</string>
+    <string name="confirm_full_reset">Sind Sie sicher, dass Sie alles zurücksetzen möchten? Dies führt Sie zum Setup-Menü zurück.</string>
+    <string name="unit_temp_c">°C</string>
+    <string name="unit_temp_f">°F</string>
+    <string name="use_old_ui">Altes UI verwenden</string>
+    <string name="use_new_ui">Neues UI verwenden</string>
+    <string name="confirm_ui_switch">Sind Sie sicher, dass Sie das Interface wechseln möchten? Die App wird neu gestartet.</string>
+    <string name="statistics_btn">Statistik</string>
+    <string name="edit_name">Name ändern</string>
+    <string name="edit_vehicle">Fahrzeug ändern</string>
 </resources>
