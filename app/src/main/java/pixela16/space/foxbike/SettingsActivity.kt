@@ -14,10 +14,11 @@ import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
-import org.json.JSONArray
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.concurrent.thread
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -160,6 +161,15 @@ class SettingsActivity : AppCompatActivity() {
                 .show()
         }
 
+        // Updater
+        val tvBranch = findViewById<TextView>(R.id.tvUpdaterBranch)
+        val isDev = prefs.getBoolean("useDeveloperBranch", false)
+        tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
+        
+        findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
+            checkUpdates(isDev)
+        }
+
         val tvVersion = findViewById<TextView>(R.id.tvSettingsVersion)
         tvVersion.setOnClickListener {
             val currentTime = System.currentTimeMillis()
@@ -170,6 +180,52 @@ class SettingsActivity : AppCompatActivity() {
                 clickCount = 0
             }
         }
+    }
+
+    private fun checkUpdates(devBranch: Boolean) {
+        val currentVersion = 3.0
+        thread {
+            try {
+                val url = URL("https://api.github.com/repos/your-username/FoxBike/releases" + if (devBranch) "" else "/latest")
+                val conn = url.openConnection() as HttpURLConnection
+                val response = conn.inputStream.bufferedReader().readText()
+                
+                val latestVersion: Double
+                val downloadUrl: String
+                
+                if (devBranch) {
+                    val releases = org.json.JSONArray(response)
+                    val latest = releases.getJSONObject(0)
+                    latestVersion = latest.getString("tag_name").replace(Regex("[^0-9.]"), "").toDoubleOrNull() ?: 0.0
+                    downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                } else {
+                    val latest = JSONObject(response)
+                    latestVersion = latest.getString("tag_name").replace(Regex("[^0-9.]"), "").toDoubleOrNull() ?: 0.0
+                    downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                }
+
+                runOnUiThread {
+                    if (latestVersion > currentVersion) {
+                        showUpdateDialog(latestVersion, downloadUrl)
+                    } else {
+                        Toast.makeText(this, R.string.no_update, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread { Toast.makeText(this, "Update check failed", Toast.LENGTH_SHORT).show() }
+            }
+        }
+    }
+
+    private fun showUpdateDialog(version: Double, url: String) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available)
+            .setMessage("Version $version is available.")
+            .setPositiveButton(R.string.install_update) { _, _ ->
+                Toast.makeText(this, R.string.downloading, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun updateLocale(lang: String) {
@@ -206,6 +262,12 @@ class SettingsActivity : AppCompatActivity() {
                         prefs.edit { putFloat("totalOdometer", 0f) }
                         Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
                     }
+                    "1904" -> {
+                        val isDev = !prefs.getBoolean("useDeveloperBranch", false)
+                        prefs.edit { putBoolean("useDeveloperBranch", isDev) }
+                        Toast.makeText(this, getString(R.string.branch_switched, if (isDev) "developer" else "main"), Toast.LENGTH_SHORT).show()
+                        recreate()
+                    }
                 }
             }
             .setNegativeButton(R.string.cancel, null)
@@ -227,50 +289,5 @@ class SettingsActivity : AppCompatActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
-    }
-
-    private class CityAutocompleteAdapter(context: Context) : ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line), Filterable {
-        private var results: List<String> = arrayListOf()
-
-        override fun getCount(): Int = results.size
-        override fun getItem(index: Int): String? = if (index < results.size) results[index] else null
-
-        override fun getFilter(): Filter {
-            return object : Filter() {
-                override fun performFiltering(constraint: CharSequence?): FilterResults {
-                    val filterResults = FilterResults()
-                    if (constraint != null) {
-                        results = fetchCitySuggestions(constraint.toString())
-                        filterResults.values = results
-                        filterResults.count = results.size
-                    }
-                    return filterResults
-                }
-
-                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged()
-                    } else {
-                        notifyDataSetInvalidated()
-                    }
-                }
-            }
-        }
-
-        private fun fetchCitySuggestions(query: String): List<String> {
-            val list = mutableListOf<String>()
-            try {
-                val url = URL("https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=5")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.setRequestProperty("User-Agent", "FoxBike-Android-App")
-                val response = conn.inputStream.bufferedReader().readText()
-                val jsonArray = JSONArray(response)
-                for (i in 0 until jsonArray.length()) {
-                    val obj = jsonArray.getJSONObject(i)
-                    list.add(obj.getString("display_name"))
-                }
-            } catch (e: Exception) {}
-            return list
-        }
     }
 }

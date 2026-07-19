@@ -18,7 +18,7 @@
     <string name="language">Nyelv</string>
     <string name="reset_odometer">Odométer nullázása</string>
     <string name="units">Mértékegységek</string>
-    <string name="version">Verzió 3.0</string>
+    <string name="version">Verzió 3.0 Beta 2</string>
     <string name="enter_code">Titkos kód megadása</string>
     <string name="demo_mode_enabled">Demó mód bekapcsolva</string>
     <string name="demo_mode_disabled">Demó mód kikapcsolva</string>
@@ -80,4 +80,10 @@
     <string name="statistics_btn">Statisztika</string>
     <string name="edit_name">Név módosítása</string>
     <string name="edit_vehicle">Jármű módosítása</string>
+    <string name="check_updates">Frissítések keresése</string>
+    <string name="update_available">Új frissítés elérhető!</string>
+    <string name="no_update">A legfrissebb verziót használja.</string>
+    <string name="downloading">Frissítés letöltése...</string>
+    <string name="install_update">Frissítés telepítése</string>
+    <string name="branch_switched">Updater átváltva %s ágra.</string>
 </resources>

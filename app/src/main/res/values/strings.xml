@@ -18,7 +18,7 @@
     <string name="language">Language</string>
     <string name="reset_odometer">Reset Odometer</string>
     <string name="units">Units</string>
-    <string name="version">Version 3.0</string>
+    <string name="version">Version 3.0 Beta 2</string>
     <string name="enter_code">Enter secret code</string>
     <string name="demo_mode_enabled">Demo Mode Enabled</string>
     <string name="demo_mode_disabled">Demo Mode Disabled</string>
@@ -80,6 +80,12 @@
     <string name="statistics_btn">Statistics</string>
     <string name="edit_name">Change Name</string>
     <string name="edit_vehicle">Change Vehicle</string>
+    <string name="check_updates">Check for Updates</string>
+    <string name="update_available">New update available!</string>
+    <string name="no_update">You have the latest version.</string>
+    <string name="downloading">Downloading update...</string>
+    <string name="install_update">Install Update</string>
+    <string name="branch_switched">Updater switched to %s branch.</string>
     <string name="stat_placeholder" translatable="false">0.0</string>
     <string name="odo_format" translatable="false">ODO: %s</string>
 </resources>

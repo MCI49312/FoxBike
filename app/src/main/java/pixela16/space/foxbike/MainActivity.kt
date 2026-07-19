@@ -17,7 +17,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -117,12 +121,12 @@ class MainActivity : AppCompatActivity() {
             val name = prefs.getString("userName", "User")
             val vehicleId = prefs.getString("vehicleType", "bicycle")
             
-            view.findViewById<TextView>(R.id.tvHiName).text = "Hi $name!"
+            view.findViewById<TextView>(R.id.tvHiName).text = String.format("Hi %s!", name)
             
             val vehicleString = when(vehicleId) {
-                "e_scooter" -> getString(R.string.e_scooter)
-                "motorcycle" -> getString(R.string.motorcycle)
-                else -> getString(R.string.bicycle)
+                "e_scooter" -> getString(R.string.e_scooter).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
+                "motorcycle" -> getString(R.string.motorcycle).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
+                else -> getString(R.string.bicycle).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
             }
             
             view.findViewById<TextView>(R.id.tvReadyRide).text = getString(R.string.ready_to_ride, vehicleString)
@@ -141,8 +145,7 @@ class MainActivity : AppCompatActivity() {
             val factor = if (isKmh) 0.001f else 0.000621371f
             val unit = if (isKmh) "km" else "mi"
             
-            val msg = "ODO: ${String.format(Locale.getDefault(), "%.1f %s", odo * factor, unit)}\n" +
-                      "This Session: 0.00 $unit"
+            val msg = String.format(Locale.getDefault(), "ODO: %.1f %s\nThis Session: 0.00 %s", odo * factor, unit, unit)
             
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.trip_stats)
@@ -270,6 +273,15 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
 
+            // Updater
+            val tvBranch = view.findViewById<TextView>(R.id.tvUpdaterBranch)
+            val isDev = prefs.getBoolean("useDeveloperBranch", false)
+            tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
+            
+            view.findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
+                checkUpdates(isDev)
+            }
+
             val tvVersion = view.findViewById<TextView>(R.id.tvSettingsVersion)
             tvVersion.setOnClickListener {
                 val currentTime = System.currentTimeMillis()
@@ -282,6 +294,49 @@ class MainActivity : AppCompatActivity() {
             }
             
             return view
+        }
+
+        private fun checkUpdates(devBranch: Boolean) {
+            val currentVersionName = "3.0 Beta 2"
+            thread {
+                try {
+                    val url = URL("https://api.github.com/repos/MCI49312/FoxBike/releases" + if (devBranch) "" else "/latest")
+                    val conn = url.openConnection() as HttpURLConnection
+                    val responseText = conn.inputStream.bufferedReader().readText()
+                    
+                    val latestVersionName: String
+                    val downloadUrl: String
+                    
+                    if (devBranch) {
+                        val releases = org.json.JSONArray(responseText)
+                        val latest = releases.getJSONObject(0)
+                        latestVersionName = latest.getString("tag_name")
+                        downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                    } else {
+                        val latest = JSONObject(responseText)
+                        latestVersionName = latest.getString("tag_name")
+                        downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                    }
+
+                    activity?.runOnUiThread {
+                        if (latestVersionName != currentVersionName) {
+                            AlertDialog.Builder(requireContext())
+                                .setTitle(R.string.update_available)
+                                .setMessage(String.format("Version %s is available.", latestVersionName))
+                                .setPositiveButton(R.string.install_update) { _, _ ->
+                                    val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(downloadUrl))
+                                    startActivity(intent)
+                                }
+                                .setNegativeButton(R.string.cancel, null)
+                                .show()
+                        } else {
+                            Toast.makeText(requireContext(), R.string.no_update, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    activity?.runOnUiThread { Toast.makeText(requireContext(), "Update check failed", Toast.LENGTH_SHORT).show() }
+                }
+            }
         }
 
         private fun showCodeDialog() {
@@ -309,6 +364,12 @@ class MainActivity : AppCompatActivity() {
                             prefs.edit { putFloat("totalOdometer", 0f) }
                             Toast.makeText(requireContext(), R.string.reset_odometer, Toast.LENGTH_SHORT).show()
                         }
+                        "1904" -> {
+                            val isDev = !prefs.getBoolean("useDeveloperBranch", false)
+                            prefs.edit { putBoolean("useDeveloperBranch", isDev) }
+                            Toast.makeText(requireContext(), getString(R.string.branch_switched, if (isDev) "developer" else "main"), Toast.LENGTH_SHORT).show()
+                            requireActivity().recreate()
+                        }
                     }
                 }
                 .setNegativeButton(R.string.cancel, null)
@@ -325,7 +386,6 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("OK") { _, _ ->
                     val value = input.text.toString().toFloatOrNull() ?: 0f
                     val prefs = requireContext().getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
-                    // Store as meters
                     prefs.edit { putFloat("totalOdometer", value * 1000f) }
                     Toast.makeText(requireContext(), "Odometer set to $value km", Toast.LENGTH_SHORT).show()
                 }
