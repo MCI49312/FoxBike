@@ -38,6 +38,7 @@ class ActiveTripActivity : AppCompatActivity() {
     private var currentSpeedMs = 0f
     private var maxSpeedMs = 0f
     private var totalElevationGain = 0f
+    private var totalCalories = 0f
     private val trackedPoints = mutableListOf<GeoPoint>()
 
     private var startTimeMillis = 0L
@@ -127,6 +128,7 @@ class ActiveTripActivity : AppCompatActivity() {
         }
         isTracking = true
         startTimeMillis = System.currentTimeMillis()
+        totalCalories = 0f
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
@@ -185,9 +187,14 @@ class ActiveTripActivity : AppCompatActivity() {
         
         val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
         val weight = prefs.getString("weight", "70")?.toFloatOrNull() ?: 70f
-        val met = if (currentSpeedMs * 3.6f < 16) 4.0f else 8.0f
-        val calories = met * weight * (seconds / 3600f)
-        setStatValue(viewCalories, String.format(Locale.getDefault(), "%.0f kcal", calories))
+        
+        // Calories calculation: only count when moving > 2 km/h
+        val speedKmh = currentSpeedMs * 3.6f
+        if (speedKmh > 2.0f) {
+            val met = if (speedKmh < 16) 4.0f else 8.0f
+            totalCalories += met * weight * (1.0f / 3600.0f) // added for this 1 second
+        }
+        setStatValue(viewCalories, String.format(Locale.getDefault(), "%.0f kcal", totalCalories))
     }
 
     private fun pauseTracking() { isPaused = true; pauseStartTimeMillis = System.currentTimeMillis(); findViewById<Button>(R.id.btnActivePause).text = getString(R.string.resume) }

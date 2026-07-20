@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.core.widget.addTextChangedListener
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -121,12 +122,12 @@ class MainActivity : AppCompatActivity() {
             val name = prefs.getString("userName", "User")
             val vehicleId = prefs.getString("vehicleType", "bicycle")
             
-            view.findViewById<TextView>(R.id.tvHiName).text = String.format("Hi %s!", name)
+            view.findViewById<TextView>(R.id.tvHiName).text = "Hi $name!"
             
             val vehicleString = when(vehicleId) {
-                "e_scooter" -> getString(R.string.e_scooter).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
-                "motorcycle" -> getString(R.string.motorcycle).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
-                else -> getString(R.string.bicycle).replace(Regex("[^a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\\s]"), "").trim()
+                "e_scooter" -> getString(R.string.e_scooter)
+                "motorcycle" -> getString(R.string.motorcycle)
+                else -> getString(R.string.bicycle)
             }
             
             view.findViewById<TextView>(R.id.tvReadyRide).text = getString(R.string.ready_to_ride, vehicleString)
@@ -231,6 +232,8 @@ class MainActivity : AppCompatActivity() {
 
             val etWeatherLoc = view.findViewById<AutoCompleteTextView>(R.id.etSettingsWeatherLoc)
             etWeatherLoc.setText(prefs.getString("weatherLocation", "Budapest"))
+            val cityAdapter = CityAutocompleteAdapter(requireContext())
+            etWeatherLoc.setAdapter(cityAdapter)
             etWeatherLoc.addTextChangedListener { prefs.edit { putString("weatherLocation", it.toString()) } }
 
             val etWeight = view.findViewById<EditText>(R.id.etSettingsWeight)
@@ -297,7 +300,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun checkUpdates(devBranch: Boolean) {
-            val currentVersionName = "3.0 Beta 2"
+            val currentVersionName = "3.0 Beta 3"
             thread {
                 try {
                     val url = URL("https://api.github.com/repos/MCI49312/FoxBike/releases" + if (devBranch) "" else "/latest")
@@ -308,7 +311,7 @@ class MainActivity : AppCompatActivity() {
                     val downloadUrl: String
                     
                     if (devBranch) {
-                        val releases = org.json.JSONArray(responseText)
+                        val releases = JSONArray(responseText)
                         val latest = releases.getJSONObject(0)
                         latestVersionName = latest.getString("tag_name")
                         downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")

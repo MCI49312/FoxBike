@@ -81,14 +81,21 @@ class OnboardingActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnNext).setOnClickListener {
             val name = findViewById<EditText>(R.id.etName).text.toString()
+            val weight = findViewById<EditText>(R.id.etWeight).text.toString()
+            
             if (name.isEmpty()) {
                 Toast.makeText(this, R.string.enter_name, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (weight.isEmpty()) {
+                Toast.makeText(this, R.string.weight, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
             prefs.edit {
                 putString("userName", name)
+                putString("weight", weight)
                 putString("vehicleType", vehicleIds[spinnerVehicle.selectedItemPosition])
                 putString("language", langCodes[spinnerLang.selectedItemPosition])
                 putBoolean("onboardingFinished", true)

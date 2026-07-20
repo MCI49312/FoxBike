@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.text.InputType
 import android.view.View
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -44,10 +45,14 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var currentSpeedMs = 0f
     private var maxSpeedMs = 0f
     private var totalElevationGain = 0f
+    private var totalCalories = 0f
     private val trackedPoints = mutableListOf<GeoPoint>()
 
     private var tts: TextToSpeech? = null
     private var lastAnnouncedDistance = 0f
+
+    private var clickCount = 0
+    private var lastClickTime = 0L
 
     // Stopwatch/Timer
     private val timerHandler = Handler(Looper.getMainLooper())
@@ -178,6 +183,16 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         btnPauseResume.setOnClickListener {
             if (isPaused) resumeTracking() else pauseTracking()
         }
+
+        tvSpeed.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
+            lastClickTime = currentTime
+            if (clickCount == 7) {
+                showCodeDialog()
+                clickCount = 0
+            }
+        }
         
         updateUI()
     }
@@ -201,6 +216,7 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         tripDistance = 0f
         maxSpeedMs = 0f
         totalElevationGain = 0f
+        totalCalories = 0f
         lastLocation = null
         trackedPoints.clear()
         startTimeMillis = System.currentTimeMillis()
@@ -294,15 +310,18 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         
         val weight = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE).getString("weight", "70")?.toFloatOrNull() ?: 70f
         val speedKmh = currentSpeedMs * 3.6f
-        val met = when {
-            speedKmh < 16 -> 4.0f
-            speedKmh < 19 -> 6.8f
-            speedKmh < 22 -> 8.0f
-            speedKmh < 25 -> 10.0f
-            else -> 12.0f
+        
+        if (speedKmh > 2.0f) {
+            val met = when {
+                speedKmh < 16 -> 4.0f
+                speedKmh < 19 -> 6.8f
+                speedKmh < 22 -> 8.0f
+                speedKmh < 25 -> 10.0f
+                else -> 12.0f
+            }
+            totalCalories += met * weight * (1.0f / 3600.0f)
         }
-        val calories = met * weight * (seconds / 3600f)
-        setStatValue(viewCalories, String.format(Locale.getDefault(), "%.0f kcal", calories))
+        setStatValue(viewCalories, String.format(Locale.getDefault(), "%.0f kcal", totalCalories))
     }
 
     private fun pauseTracking() {
@@ -388,6 +407,63 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun loadOdometer() {
         val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
         totalOdometer = prefs.getFloat("totalOdometer", 0f)
+    }
+
+    private fun showCodeDialog() {
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        AlertDialog.Builder(this)
+            .setTitle(R.string.enter_code)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val code = input.text.toString()
+                val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+                when (code) {
+                    "1900" -> {
+                        prefs.edit { putBoolean("demoMode", true) }
+                        Toast.makeText(this, R.string.demo_mode_enabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1901" -> {
+                        prefs.edit { putBoolean("demoMode", false) }
+                        Toast.makeText(this, R.string.demo_mode_disabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1902" -> {
+                        showSetOdometerDialog()
+                    }
+                    "1903" -> {
+                        prefs.edit { putFloat("totalOdometer", 0f) }
+                        Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
+                        loadOdometer()
+                        updateUI()
+                    }
+                    "1904" -> {
+                        val isDev = !prefs.getBoolean("useDeveloperBranch", false)
+                        prefs.edit { putBoolean("useDeveloperBranch", isDev) }
+                        Toast.makeText(this, "Branch switched to ${if (isDev) "developer" else "main"}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showSetOdometerDialog() {
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        input.hint = "Value in km"
+        AlertDialog.Builder(this)
+            .setTitle("Set Odometer")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val value = input.text.toString().toFloatOrNull() ?: 0f
+                val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+                prefs.edit { putFloat("totalOdometer", value * 1000f) }
+                Toast.makeText(this, "Odometer set to $value km", Toast.LENGTH_SHORT).show()
+                loadOdometer()
+                updateUI()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun onResume() {

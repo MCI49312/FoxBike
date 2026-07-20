@@ -72,8 +72,17 @@
                 android:id="@+id/spinnerVehicle"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="16dp"
                 android:background="?android:attr/editTextBackground"/>
+
+            <EditText
+                android:id="@+id/etWeight"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="@string/weight"
+                android:inputType="numberDecimal"
+                android:autofillHints="none"
+                android:layout_marginBottom="32dp" />
 
             <Button
                 android:id="@+id/btnNext"

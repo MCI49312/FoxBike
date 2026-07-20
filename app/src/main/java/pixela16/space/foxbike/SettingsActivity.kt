@@ -14,6 +14,7 @@ import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -123,6 +124,12 @@ class SettingsActivity : AppCompatActivity() {
             addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
         }
 
+        val etWeatherLoc = findViewById<AutoCompleteTextView>(R.id.etSettingsWeatherLoc)
+        etWeatherLoc.setText(prefs.getString("weatherLocation", "Budapest"))
+        val cityAdapter = CityAutocompleteAdapter(this)
+        etWeatherLoc.setAdapter(cityAdapter)
+        etWeatherLoc.addTextChangedListener { prefs.edit { putString("weatherLocation", it.toString()) } }
+
         val btnSwitchUI = findViewById<Button>(R.id.btnSwitchUI)
         val useOld = prefs.getBoolean("useOldUI", false)
         btnSwitchUI.text = if (useOld) getString(R.string.use_new_ui) else getString(R.string.use_old_ui)
@@ -186,7 +193,7 @@ class SettingsActivity : AppCompatActivity() {
         val currentVersion = 3.0
         thread {
             try {
-                val url = URL("https://api.github.com/repos/your-username/FoxBike/releases" + if (devBranch) "" else "/latest")
+                val url = URL("https://api.github.com/repos/MCI49312/FoxBike/releases" + if (devBranch) "" else "/latest")
                 val conn = url.openConnection() as HttpURLConnection
                 val response = conn.inputStream.bufferedReader().readText()
                 
@@ -194,7 +201,7 @@ class SettingsActivity : AppCompatActivity() {
                 val downloadUrl: String
                 
                 if (devBranch) {
-                    val releases = org.json.JSONArray(response)
+                    val releases = JSONArray(response)
                     val latest = releases.getJSONObject(0)
                     latestVersion = latest.getString("tag_name").replace(Regex("[^0-9.]"), "").toDoubleOrNull() ?: 0.0
                     downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")

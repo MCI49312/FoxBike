@@ -18,7 +18,7 @@
     <string name="language">Language</string>
     <string name="reset_odometer">Reset Odometer</string>
     <string name="units">Units</string>
-    <string name="version">Version 3.0 Beta 2</string>
+    <string name="version">Version 3.0 Beta 3</string>
     <string name="enter_code">Enter secret code</string>
     <string name="demo_mode_enabled">Demo Mode Enabled</string>
     <string name="demo_mode_disabled">Demo Mode Disabled</string>
@@ -39,7 +39,7 @@
     <string name="resume">Resume</string>
     <string name="history">History</string>
     <string name="statistics">Statistics</string>
-    <string name="weight">User Weight</string>
+    <string name="weight">User Weight (kg)</string>
     <string name="wind_unit">Wind Speed Unit</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Are you sure you want to reset the odometer to zero?</string>
