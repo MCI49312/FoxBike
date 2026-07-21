@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech
 import android.text.InputType
 import android.view.View
 import android.widget.*
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -131,6 +132,10 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         timerHandler.post(timerRunnable)
         weatherHandler.post(weatherRunnable)
+
+        onBackPressedDispatcher.addCallback(this) {
+            if (isTracking) showStopConfirmation() else finish()
+        }
     }
 
     override fun onInit(status: Int) {
@@ -166,14 +171,23 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        findViewById<ImageButton>(R.id.btnMap).setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
-            intent.putParcelableArrayListExtra("points", ArrayList(trackedPoints))
-            startActivity(intent)
+        val btnMap = findViewById<ImageButton>(R.id.btnMap)
+        if (getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE).getBoolean("disableMaps", false)) {
+            btnMap.visibility = View.GONE
+        } else {
+            btnMap.setOnClickListener {
+                val intent = Intent(this, MapActivity::class.java)
+                intent.putParcelableArrayListExtra("points", ArrayList(trackedPoints))
+                startActivity(intent)
+            }
         }
 
         findViewById<ImageButton>(R.id.btnStats).setOnClickListener {
             showSummaryStats()
+        }
+
+        findViewById<ImageButton>(R.id.btnHistory).setOnClickListener {
+            showTripsHistory()
         }
 
         btnStartStop.setOnClickListener {
@@ -184,17 +198,20 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             if (isPaused) resumeTracking() else pauseTracking()
         }
 
-        tvSpeed.setOnClickListener {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
-            lastClickTime = currentTime
-            if (clickCount == 7) {
-                showCodeDialog()
-                clickCount = 0
-            }
-        }
+        tvSpeed.setOnClickListener { onVersionClick() }
+        tvOdometer.setOnClickListener { onVersionClick() }
         
         updateUI()
+    }
+
+    private fun onVersionClick() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
+        lastClickTime = currentTime
+        if (clickCount == 7) {
+            showCodeDialog()
+            clickCount = 0
+        }
     }
 
     private fun setStatLabel(view: View, label: String) {
@@ -385,6 +402,74 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             .show()
     }
 
+    private fun showTripsHistory() {
+        val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+        val tripsJson = prefs.getString("trips_history", "[]") ?: "[]"
+        val tripsArray = org.json.JSONArray(tripsJson)
+        
+        if (tripsArray.length() == 0) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.trips)
+                .setMessage("No saved trips yet.")
+                .setPositiveButton("OK", null)
+                .show()
+            return
+        }
+
+        val adapter = TripHistoryAdapter(this, tripsArray, 
+            onDelete = { index ->
+                val newArray = org.json.JSONArray()
+                for (i in 0 until tripsArray.length()) {
+                    if (i != index) newArray.put(tripsArray.get(i))
+                }
+                prefs.edit().putString("trips_history", newArray.toString()).apply()
+                showTripsHistory()
+            },
+            onClick = { index ->
+                showTripDetails(tripsArray.getJSONObject(index))
+            }
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.trips)
+            .setAdapter(adapter, null)
+            .setPositiveButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showTripDetails(trip: org.json.JSONObject) {
+        val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+        val isKmh = prefs.getBoolean("isKmh", true)
+        val factor = if (isKmh) 0.001f else 0.000621371f
+        val speedFactor = if (isKmh) 3.6f else 2.23694f
+        val unit = if (isKmh) "km" else "mi"
+        val speedUnit = if (isKmh) "km/h" else "mph"
+        
+        val dist = trip.getDouble("distance").toFloat()
+        val maxSpeed = trip.getDouble("maxSpeed").toFloat()
+        val duration = trip.getLong("duration")
+        val calories = trip.optDouble("calories", 0.0).toFloat()
+        
+        val h = duration / 3600
+        val m = (duration % 3600) / 60
+        val s = duration % 60
+        val timeStr = String.format(Locale.getDefault(), "%02d:%02d:%02d", h, m, s)
+
+        val avgSpeedMs = if (duration > 0) dist / duration else 0f
+
+        val msg = "Distance: ${String.format(Locale.getDefault(), "%.2f %s", dist * factor, unit)}\n" +
+                  "Time: $timeStr\n" +
+                  "Avg Speed: ${String.format(Locale.getDefault(), "%.1f %s", avgSpeedMs * speedFactor, speedUnit)}\n" +
+                  "Max Speed: ${String.format(Locale.getDefault(), "%.1f %s", maxSpeed * speedFactor, speedUnit)}\n" +
+                  "Calories: ${String.format(Locale.getDefault(), "%.0f kcal", calories)}"
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.trip_stats)
+            .setMessage(msg)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
     private fun showStopConfirmation() {
         AlertDialog.Builder(this)
             .setTitle(R.string.confirm_stop_title)
@@ -457,7 +542,7 @@ class OldMainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             .setPositiveButton("OK") { _, _ ->
                 val value = input.text.toString().toFloatOrNull() ?: 0f
                 val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
-                prefs.edit { putFloat("totalOdometer", value * 1000f) }
+                prefs.edit(commit = true) { putFloat("totalOdometer", value * 1000f) }
                 Toast.makeText(this, "Odometer set to $value km", Toast.LENGTH_SHORT).show()
                 loadOdometer()
                 updateUI()

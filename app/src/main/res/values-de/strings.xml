@@ -18,7 +18,7 @@
     <string name="language">Sprache</string>
     <string name="reset_odometer">Kilometerzähler zurücksetzen</string>
     <string name="units">Einheiten</string>
-    <string name="version">Version 3.0 Beta 3</string>
+    <string name="version">Version 3.0</string>
     <string name="enter_code">Geheimcode eingeben</string>
     <string name="demo_mode_enabled">Demo-Modus aktiviert</string>
     <string name="demo_mode_disabled">Demo-Modus deaktiviert</string>
@@ -39,7 +39,7 @@
     <string name="resume">Fortsetzen</string>
     <string name="history">Verlauf</string>
     <string name="statistics">Statistiken</string>
-    <string name="weight">Gewicht</string>
+    <string name="weight">Benutzergewicht (kg)</string>
     <string name="wind_unit">Windgeschwindigkeit Einheit</string>
     <string name="unit_ms">m/s</string>
     <string name="confirm_reset_odometer">Sind Sie sicher, dass Sie den Kilometerzähler auf Null zurücksetzen möchten?</string>
@@ -80,4 +80,19 @@
     <string name="statistics_btn">Statistik</string>
     <string name="edit_name">Name ändern</string>
     <string name="edit_vehicle">Fahrzeug ändern</string>
+    <string name="check_updates">Nach Updates suchen</string>
+    <string name="update_available">Neues Update verfügbar!</string>
+    <string name="no_update">Sie haben die neueste Version.</string>
+    <string name="downloading">Update wird heruntergeladen…</string>
+    <string name="install_update">Update installieren</string>
+    <string name="branch_switched">Updater auf %s Zweig umgeschaltet.</string>
+    <string name="hi_name">Hallo %s!</string>
+    <string name="disable_maps">Karten deaktivieren</string>
+    <string name="disable_updater">Updater deaktivieren</string>
+    <string name="feature_selection">Optionale Funktionen</string>
+    <string name="bicycle_ready">Fahrrad</string>
+    <string name="e_scooter_ready">E-Scooter</string>
+    <string name="motorcycle_ready">Motorrad</string>
+    <string name="delete_trip">Trip löschen</string>
+    <string name="confirm_delete_trip">Sind Sie sicher, dass Sie diesen Trip löschen möchten?</string>
 </resources>

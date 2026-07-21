@@ -99,8 +99,13 @@ class MainActivity : AppCompatActivity() {
             
             updateHomeUI(view, prefs)
             
-            view.findViewById<View>(R.id.cardMap).setOnClickListener {
-                startActivity(Intent(requireContext(), MapActivity::class.java))
+            val cardMap = view.findViewById<View>(R.id.cardMap)
+            if (prefs.getBoolean("disableMaps", false)) {
+                cardMap.visibility = View.GONE
+            } else {
+                cardMap.setOnClickListener {
+                    startActivity(Intent(requireContext(), MapActivity::class.java))
+                }
             }
 
             view.findViewById<View>(R.id.cardStats).setOnClickListener {
@@ -122,12 +127,12 @@ class MainActivity : AppCompatActivity() {
             val name = prefs.getString("userName", "User")
             val vehicleId = prefs.getString("vehicleType", "bicycle")
             
-            view.findViewById<TextView>(R.id.tvHiName).text = "Hi $name!"
+            view.findViewById<TextView>(R.id.tvHiName).text = getString(R.string.hi_name, name)
             
             val vehicleString = when(vehicleId) {
-                "e_scooter" -> getString(R.string.e_scooter)
-                "motorcycle" -> getString(R.string.motorcycle)
-                else -> getString(R.string.bicycle)
+                "e_scooter" -> getString(R.string.e_scooter_ready)
+                "motorcycle" -> getString(R.string.motorcycle_ready)
+                else -> getString(R.string.bicycle_ready)
             }
             
             view.findViewById<TextView>(R.id.tvReadyRide).text = getString(R.string.ready_to_ride, vehicleString)
@@ -156,9 +161,69 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun showTripsHistory() {
+            val prefs = requireContext().getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+            val tripsJson = prefs.getString("trips_history", "[]") ?: "[]"
+            val tripsArray = org.json.JSONArray(tripsJson)
+            
+            if (tripsArray.length() == 0) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.trips)
+                    .setMessage("No saved trips yet.")
+                    .setPositiveButton("OK", null)
+                    .show()
+                return
+            }
+
+            val adapter = TripHistoryAdapter(requireContext(), tripsArray, 
+                onDelete = { index ->
+                    val newArray = org.json.JSONArray()
+                    for (i in 0 until tripsArray.length()) {
+                        if (i != index) newArray.put(tripsArray.get(i))
+                    }
+                    prefs.edit().putString("trips_history", newArray.toString()).apply()
+                    showTripsHistory() // Refresh the dialog (by showing a new one, simple for now)
+                },
+                onClick = { index ->
+                    showTripDetails(tripsArray.getJSONObject(index))
+                }
+            )
+
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.trips)
-                .setMessage("No saved trips yet.")
+                .setAdapter(adapter, null)
+                .setPositiveButton(R.string.cancel, null)
+                .show()
+        }
+
+        private fun showTripDetails(trip: org.json.JSONObject) {
+            val prefs = requireContext().getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+            val isKmh = prefs.getBoolean("isKmh", true)
+            val factor = if (isKmh) 0.001f else 0.000621371f
+            val speedFactor = if (isKmh) 3.6f else 2.23694f
+            val unit = if (isKmh) "km" else "mi"
+            val speedUnit = if (isKmh) "km/h" else "mph"
+            
+            val dist = trip.getDouble("distance").toFloat()
+            val maxSpeed = trip.getDouble("maxSpeed").toFloat()
+            val duration = trip.getLong("duration")
+            val calories = trip.optDouble("calories", 0.0).toFloat()
+            
+            val h = duration / 3600
+            val m = (duration % 3600) / 60
+            val s = duration % 60
+            val timeStr = String.format("%02d:%02d:%02d", h, m, s)
+
+            val avgSpeedMs = if (duration > 0) dist / duration else 0f
+
+            val msg = "Distance: ${String.format("%.2f %s", dist * factor, unit)}\n" +
+                      "Time: $timeStr\n" +
+                      "Avg Speed: ${String.format("%.1f %s", avgSpeedMs * speedFactor, speedUnit)}\n" +
+                      "Max Speed: ${String.format("%.1f %s", maxSpeed * speedFactor, speedUnit)}\n" +
+                      "Calories: ${String.format("%.0f kcal", calories)}"
+
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.trip_stats)
+                .setMessage(msg)
                 .setPositiveButton("OK", null)
                 .show()
         }
@@ -178,6 +243,29 @@ class MainActivity : AppCompatActivity() {
             val view = inflater.inflate(R.layout.fragment_settings, container, false)
             val prefs = requireContext().getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
             
+            // Language Spinner
+            val spinnerLang = view.findViewById<Spinner>(R.id.spinnerSettingsLanguage)
+            val langCodes = arrayOf("en", "hu", "de", "ro", "pl", "bg", "el", "sk", "cs", "sr", "hr", "zh", "ja")
+            val langDisplay = arrayOf(
+                "🇺🇸 English", "🇭🇺 Magyar", "🇩🇪 Deutsch", "🇷🇴 Română", "🇵🇱 Polski", 
+                "🇧🇬 Български", "🇬🇷 Ελληνικά", "🇸🇰 Slovenčina", "🇨🇿 Čeština", 
+                "🇷🇸 Srpski", "🇭🇷 Hrvatski", "🇨🇳 中文", "🇯🇵 日本語"
+            )
+            spinnerLang.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, langDisplay)
+            val currentLang = prefs.getString("language", "en") ?: "en"
+            spinnerLang.setSelection(langCodes.indexOf(currentLang).coerceAtLeast(0))
+            spinnerLang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                    val newLang = langCodes[pos]
+                    if (newLang != prefs.getString("language", "en")) {
+                        prefs.edit { putString("language", newLang) }
+                        (requireActivity() as MainActivity).updateLocale(newLang)
+                        requireActivity().recreate()
+                    }
+                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
+
             val etName = view.findViewById<EditText>(R.id.etSettingsName)
             etName.setText(prefs.getString("userName", ""))
             etName.addTextChangedListener { prefs.edit { putString("userName", it.toString()) } }
@@ -277,12 +365,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Updater
-            val tvBranch = view.findViewById<TextView>(R.id.tvUpdaterBranch)
-            val isDev = prefs.getBoolean("useDeveloperBranch", false)
-            tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
-            
-            view.findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
-                checkUpdates(isDev)
+            val layoutUpdater = view.findViewById<View>(R.id.layoutUpdater)
+            if (prefs.getBoolean("disableUpdater", false)) {
+                layoutUpdater.visibility = View.GONE
+            } else {
+                val tvBranch = view.findViewById<TextView>(R.id.tvUpdaterBranch)
+                val isDev = prefs.getBoolean("useDeveloperBranch", false)
+                tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
+                
+                view.findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
+                    checkUpdates(isDev)
+                }
             }
 
             val tvVersion = view.findViewById<TextView>(R.id.tvSettingsVersion)

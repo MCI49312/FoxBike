@@ -10,6 +10,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -91,6 +92,10 @@ class ActiveTripActivity : AppCompatActivity() {
         startTracking()
         timerHandler.post(timerRunnable)
         refreshWeather()
+
+        onBackPressedDispatcher.addCallback(this) {
+            showStopConfirmation()
+        }
     }
 
     private fun initViews() {
@@ -249,11 +254,30 @@ class ActiveTripActivity : AppCompatActivity() {
             .setTitle(R.string.confirm_stop_title)
             .setMessage(R.string.confirm_stop_message)
             .setPositiveButton(R.string.yes) { _, _ -> 
+                saveTrip()
                 val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
                 prefs.edit().putFloat("totalOdometer", prefs.getFloat("totalOdometer", 0f) + tripDistance).apply()
                 finish() 
             }
             .setNegativeButton(R.string.no, null)
             .show()
+    }
+
+    private fun saveTrip() {
+        val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+        val tripsJson = prefs.getString("trips_history", "[]") ?: "[]"
+        try {
+            val tripsArray = org.json.JSONArray(tripsJson)
+            val trip = JSONObject().apply {
+                put("date", System.currentTimeMillis())
+                put("distance", tripDistance)
+                put("maxSpeed", maxSpeedMs)
+                put("elevation", totalElevationGain)
+                put("calories", totalCalories)
+                put("duration", getElapsedTimeSeconds())
+            }
+            tripsArray.put(trip)
+            prefs.edit().putString("trips_history", tripsArray.toString()).apply()
+        } catch (e: Exception) { e.printStackTrace() }
     }
 }

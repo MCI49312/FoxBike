@@ -24,6 +24,11 @@ class OnboardingActivity : AppCompatActivity() {
         "🇷🇸 Srpski", "🇭🇷 Hrvatski", "🇨🇳 中文", "🇯🇵 日本語"
     )
 
+    private var userName: String = ""
+    private var userWeight: String = ""
+    private var vehicleType: String = ""
+    private var language: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
         if (prefs.getBoolean("onboardingFinished", false)) {
@@ -50,6 +55,18 @@ class OnboardingActivity : AppCompatActivity() {
         startWelcomeAnimation()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("savedName", findViewById<EditText>(R.id.etName).text.toString())
+        outState.putString("savedWeight", findViewById<EditText>(R.id.etWeight).text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        findViewById<EditText>(R.id.etName).setText(savedInstanceState.getString("savedName", ""))
+        findViewById<EditText>(R.id.etWeight).setText(savedInstanceState.getString("savedWeight", ""))
+    }
+
     private fun startWelcomeAnimation() {
         val tvWelcome = findViewById<TextView>(R.id.tvWelcome)
         tvWelcome.visibility = View.VISIBLE
@@ -72,42 +89,86 @@ class OnboardingActivity : AppCompatActivity() {
         val spinnerLang = findViewById<Spinner>(R.id.spinnerLanguage)
         val langAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, langDisplay)
         spinnerLang.adapter = langAdapter
+        
+        val currentLang = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE).getString("language", "en") ?: "en"
+        spinnerLang.setSelection(langCodes.indexOf(currentLang).coerceAtLeast(0), false)
+        
+        spinnerLang.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                val newLang = langCodes[pos]
+                val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+                if (newLang != prefs.getString("language", "")) {
+                    prefs.edit { putString("language", newLang) }
+                    updateLocale(newLang)
+                    
+                    // Save current inputs before recreation
+                    userName = findViewById<EditText>(R.id.etName).text.toString()
+                    userWeight = findViewById<EditText>(R.id.etWeight).text.toString()
+                    
+                    recreate()
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
 
         val spinnerVehicle = findViewById<Spinner>(R.id.spinnerVehicle)
         val vehicleIds = arrayOf("bicycle", "e_scooter", "motorcycle")
-        val vehicles = arrayOf(getString(R.string.bicycle), getString(R.string.e_scooter), getString(R.string.motorcycle))
+        val vehicles = arrayOf(
+            "🚲 " + getString(R.string.bicycle),
+            "🛴 " + getString(R.string.e_scooter),
+            "🏍️ " + getString(R.string.motorcycle)
+        )
         val vehicleAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, vehicles)
         spinnerVehicle.adapter = vehicleAdapter
 
         findViewById<Button>(R.id.btnNext).setOnClickListener {
-            val name = findViewById<EditText>(R.id.etName).text.toString()
-            val weight = findViewById<EditText>(R.id.etWeight).text.toString()
+            userName = findViewById<EditText>(R.id.etName).text.toString()
+            userWeight = findViewById<EditText>(R.id.etWeight).text.toString()
             
-            if (name.isEmpty()) {
+            if (userName.isEmpty()) {
                 Toast.makeText(this, R.string.enter_name, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (weight.isEmpty()) {
+            if (userWeight.isEmpty()) {
                 Toast.makeText(this, R.string.weight, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            
+            vehicleType = vehicleIds[spinnerVehicle.selectedItemPosition]
+            language = langCodes[spinnerLang.selectedItemPosition]
+            
+            updateLocale(language)
+            showFeatureSelection()
+        }
+    }
+
+    private fun showFeatureSelection() {
+        findViewById<View>(R.id.cardSetup).visibility = View.GONE
+        val cardFeatures = findViewById<View>(R.id.cardFeatures)
+        cardFeatures.visibility = View.VISIBLE
+        cardFeatures.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left))
+
+        findViewById<Button>(R.id.btnFinishSetup).setOnClickListener {
+            val disableMaps = findViewById<CheckBox>(R.id.cbDisableMaps).isChecked
+            val disableUpdater = findViewById<CheckBox>(R.id.cbDisableUpdater).isChecked
 
             val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
             prefs.edit {
-                putString("userName", name)
-                putString("weight", weight)
-                putString("vehicleType", vehicleIds[spinnerVehicle.selectedItemPosition])
-                putString("language", langCodes[spinnerLang.selectedItemPosition])
+                putString("userName", userName)
+                putString("weight", userWeight)
+                putString("vehicleType", vehicleType)
+                putString("language", language)
+                putBoolean("disableMaps", disableMaps)
+                putBoolean("disableUpdater", disableUpdater)
                 putBoolean("onboardingFinished", true)
             }
             
-            updateLocale(langCodes[spinnerLang.selectedItemPosition])
             showReadyScreen()
         }
     }
 
     private fun showReadyScreen() {
-        findViewById<View>(R.id.cardSetup).visibility = View.GONE
+        findViewById<View>(R.id.cardFeatures).visibility = View.GONE
         val tvReady = findViewById<TextView>(R.id.tvReady)
         tvReady.text = getString(R.string.ready_title)
         tvReady.visibility = View.VISIBLE

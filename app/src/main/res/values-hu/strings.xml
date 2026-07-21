@@ -18,7 +18,7 @@
     <string name="language">Nyelv</string>
     <string name="reset_odometer">Odométer nullázása</string>
     <string name="units">Mértékegységek</string>
-    <string name="version">Verzió 3.0 Beta 3</string>
+    <string name="version">Verzió 3.0</string>
     <string name="enter_code">Titkos kód megadása</string>
     <string name="demo_mode_enabled">Demó mód bekapcsolva</string>
     <string name="demo_mode_disabled">Demó mód kikapcsolva</string>
@@ -59,9 +59,12 @@
     <string name="next_button">Tovább</string>
     <string name="enter_name">Adja meg a nevét</string>
     <string name="vehicle_type">Jármű típusa</string>
-    <string name="bicycle">bicikliddel</string>
-    <string name="e_scooter">rollereddel</string>
-    <string name="motorcycle">motoroddal</string>
+    <string name="bicycle">Bicikli</string>
+    <string name="e_scooter">E-Roller</string>
+    <string name="motorcycle">Motor</string>
+    <string name="bicycle_ready">bicikliddel</string>
+    <string name="e_scooter_ready">rollereddel</string>
+    <string name="motorcycle_ready">motoroddal</string>
     <string name="ready_title">Készen állsz!</string>
     <string name="home_tab">Főoldal</string>
     <string name="settings_tab">Beállítások</string>
@@ -86,4 +89,10 @@
     <string name="downloading">Frissítés letöltése...</string>
     <string name="install_update">Frissítés telepítése</string>
     <string name="branch_switched">Updater átváltva %s ágra.</string>
+    <string name="hi_name">Szia %s!</string>
+    <string name="disable_maps">Térkép kikapcsolása</string>
+    <string name="disable_updater">Updater kikapcsolása</string>
+    <string name="feature_selection">Opcionális funkciók</string>
+    <string name="delete_trip">Túra törlése</string>
+    <string name="confirm_delete_trip">Biztosan törölni szeretnéd ezt a túrát?</string>
 </resources>

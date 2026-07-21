@@ -169,12 +169,17 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // Updater
-        val tvBranch = findViewById<TextView>(R.id.tvUpdaterBranch)
-        val isDev = prefs.getBoolean("useDeveloperBranch", false)
-        tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
-        
-        findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
-            checkUpdates(isDev)
+        val layoutUpdater = findViewById<View>(R.id.layoutUpdater)
+        if (prefs.getBoolean("disableUpdater", false)) {
+            layoutUpdater.visibility = View.GONE
+        } else {
+            val tvBranch = findViewById<TextView>(R.id.tvUpdaterBranch)
+            val isDev = prefs.getBoolean("useDeveloperBranch", false)
+            tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
+            
+            findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
+                checkUpdates(isDev)
+            }
         }
 
         val tvVersion = findViewById<TextView>(R.id.tvSettingsVersion)
