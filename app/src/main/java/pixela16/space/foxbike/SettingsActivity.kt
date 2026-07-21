@@ -1,6 +1,7 @@
 package pixela16.space.foxbike
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -8,16 +9,17 @@ import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import org.json.JSONArray
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.concurrent.thread
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -43,140 +45,145 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { finish() }
 
+        // Language Spinner
         val spinnerLanguage = findViewById<Spinner>(R.id.spinnerLanguage)
         val languages = arrayOf(
-            "English", "Magyar", "Deutsch", "Română", "Polski", 
-            "Български", "Ελληνικά", "Slovenčina", "Čeština", 
-            "Srpski", "Hrvatski", "中文", "日本語"
+            "🇺🇸 English", "🇭🇺 Magyar", "🇩🇪 Deutsch", "🇷🇴 Română", "🇵🇱 Polski", 
+            "🇧🇬 Български", "🇬🇷 Ελληνικά", "🇸🇰 Slovenčina", "🇨🇿 Čeština", 
+            "🇷🇸 Srpski", "🇭🇷 Hrvatski", "🇨🇳 中文", "🇯🇵 日本語"
         )
-        val langCodes = arrayOf(
-            "en", "hu", "de", "ro", "pl", 
-            "bg", "el", "sk", "cs", 
-            "sr", "hr", "zh", "ja"
-        )
-        
-        val langAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
-        spinnerLanguage.adapter = langAdapter
-        
-        val langIndex = langCodes.indexOf(currentLang).coerceAtLeast(0)
-        spinnerLanguage.setSelection(langIndex)
-
+        val langCodes = arrayOf("en", "hu", "de", "ro", "pl", "bg", "el", "sk", "cs", "sr", "hr", "zh", "ja")
+        spinnerLanguage.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
+        spinnerLanguage.setSelection(langCodes.indexOf(currentLang).coerceAtLeast(0))
         spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val newLang = langCodes[position]
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                val newLang = langCodes[pos]
                 if (newLang != prefs.getString("language", "en")) {
                     prefs.edit { putString("language", newLang) }
                     updateLocale(newLang)
                     recreate()
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val spinnerUnits = findViewById<Spinner>(R.id.spinnerUnits)
-        val units = arrayOf("km/h", "mph")
-        val unitsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, units)
-        spinnerUnits.adapter = unitsAdapter
-        
-        val isKmh = prefs.getBoolean("isKmh", true)
-        spinnerUnits.setSelection(if (isKmh) 0 else 1)
-
-        spinnerUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit { putBoolean("isKmh", position == 0) }
+        // Vehicle Spinner
+        val spinnerVehicle = findViewById<Spinner>(R.id.spinnerSettingsVehicle)
+        val vehicleIds = arrayOf("bicycle", "e_scooter", "motorcycle")
+        val vehicles = arrayOf(getString(R.string.bicycle), getString(R.string.e_scooter), getString(R.string.motorcycle))
+        spinnerVehicle.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, vehicles)
+        spinnerVehicle.setSelection(vehicleIds.indexOf(prefs.getString("vehicleType", "bicycle")).coerceAtLeast(0))
+        spinnerVehicle.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("vehicleType", vehicleIds[pos]) }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        findViewById<CheckBox>(R.id.cbUseMaps).apply {
-            isChecked = prefs.getBoolean("useMaps", true)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("useMaps", isChecked) } }
-        }
-
-        findViewById<CheckBox>(R.id.cbVoiceFeedback).apply {
-            isChecked = prefs.getBoolean("voiceFeedback", false)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("voiceFeedback", isChecked) } }
-        }
-
-        findViewById<CheckBox>(R.id.cbServiceReminder).apply {
-            isChecked = prefs.getBoolean("serviceReminder", true)
-            setOnCheckedChangeListener { _, isChecked -> prefs.edit { putBoolean("serviceReminder", isChecked) } }
-        }
-
-        findViewById<Button>(R.id.btnServiceSettings).setOnClickListener {
-            startActivity(android.content.Intent(this, ServiceReminderActivity::class.java))
-        }
-
-        findViewById<CheckBox>(R.id.cbDarkMode).apply {
-            isChecked = prefs.getBoolean("darkModeManual", false)
-            setOnCheckedChangeListener { _, isChecked ->
-                prefs.edit { putBoolean("darkModeManual", isChecked) }
-                AppCompatDelegate.setDefaultNightMode(if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        // Units Spinners
+        val spinnerTemp = findViewById<Spinner>(R.id.spinnerTempUnit)
+        val tempUnits = arrayOf("°C", "°F")
+        spinnerTemp.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, tempUnits)
+        spinnerTemp.setSelection(if (prefs.getString("tempUnit", "°C") == "°C") 0 else 1)
+        spinnerTemp.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("tempUnit", tempUnits[pos]) }
             }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val etWeatherLocation = findViewById<AutoCompleteTextView>(R.id.etWeatherLocation)
-        etWeatherLocation.setText(prefs.getString("weatherLocation", "Budapest"))
-        
-        val cityAdapter = CityAutocompleteAdapter(this)
-        etWeatherLocation.setAdapter(cityAdapter)
-        
-        etWeatherLocation.addTextChangedListener {
-            prefs.edit { putString("weatherLocation", it.toString()) }
-        }
-
-        val spinnerWindUnits = findViewById<Spinner>(R.id.spinnerWindUnits)
+        val spinnerWind = findViewById<Spinner>(R.id.spinnerWindUnit)
         val windUnits = arrayOf("km/h", "mph", "m/s")
-        val windUnitsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, windUnits)
-        spinnerWindUnits.adapter = windUnitsAdapter
-        
-        val currentWindUnit = prefs.getString("windUnit", "km/h")
-        spinnerWindUnits.setSelection(windUnits.indexOf(currentWindUnit).coerceAtLeast(0))
-
-        spinnerWindUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit { putString("windUnit", windUnits[position]) }
+        spinnerWind.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, windUnits)
+        spinnerWind.setSelection(windUnits.indexOf(prefs.getString("windUnit", "km/h")).coerceAtLeast(0))
+        spinnerWind.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putString("windUnit", windUnits[pos]) }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
 
-        val etWeight = findViewById<EditText>(R.id.etWeight)
-        etWeight.setText(prefs.getString("weight", "70"))
-        etWeight.addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
+        val spinnerDist = findViewById<Spinner>(R.id.spinnerDistanceUnit)
+        val distUnits = arrayOf("Metric (km)", "Imperial (mi)")
+        spinnerDist.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, distUnits)
+        spinnerDist.setSelection(if (prefs.getBoolean("isKmh", true)) 0 else 1)
+        spinnerDist.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                prefs.edit { putBoolean("isKmh", pos == 0) }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
 
-        findViewById<Button>(R.id.btnResetOdometer).setOnClickListener {
+        findViewById<EditText>(R.id.etSettingsName).apply {
+            setText(prefs.getString("userName", ""))
+            addTextChangedListener { prefs.edit { putString("userName", it.toString()) } }
+        }
+
+        findViewById<EditText>(R.id.etSettingsWeight).apply {
+            setText(prefs.getString("weight", "70"))
+            addTextChangedListener { prefs.edit { putString("weight", it.toString()) } }
+        }
+
+        val etWeatherLoc = findViewById<AutoCompleteTextView>(R.id.etSettingsWeatherLoc)
+        etWeatherLoc.setText(prefs.getString("weatherLocation", "Budapest"))
+        val cityAdapter = CityAutocompleteAdapter(this)
+        etWeatherLoc.setAdapter(cityAdapter)
+        etWeatherLoc.addTextChangedListener { prefs.edit { putString("weatherLocation", it.toString()) } }
+
+        val btnSwitchUI = findViewById<Button>(R.id.btnSwitchUI)
+        val useOld = prefs.getBoolean("useOldUI", false)
+        btnSwitchUI.text = if (useOld) getString(R.string.use_new_ui) else getString(R.string.use_old_ui)
+        btnSwitchUI.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle(R.string.reset_odometer)
-                .setMessage(R.string.confirm_reset_odometer)
+                .setTitle(R.string.confirm_ui_switch)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    prefs.edit { putFloat("totalOdometer", 0f) }
-                    Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
+                    prefs.edit { putBoolean("useOldUI", !useOld) }
+                    val nextIntent = if (!useOld) Intent(this, OldMainActivity::class.java) else Intent(this, MainActivity::class.java)
+                    startActivity(nextIntent)
+                    finishAffinity()
                 }
                 .setNegativeButton(R.string.no, null)
                 .show()
         }
 
-        val layoutDemoMode = findViewById<LinearLayout>(R.id.layoutDemoMode)
-        layoutDemoMode.visibility = if (prefs.getBoolean("demoMode", false)) View.VISIBLE else View.GONE
-
-        val etFakeSpeed = findViewById<EditText>(R.id.etFakeSpeed)
-        val etFakeOdometer = findViewById<EditText>(R.id.etFakeOdometer)
-        val etFakeTrip = findViewById<EditText>(R.id.etFakeTrip)
-        
-        etFakeSpeed.setText(prefs.getFloat("fakeSpeed", 0f).toString())
-        etFakeOdometer.setText(prefs.getFloat("fakeOdometer", 0f).toString())
-        etFakeTrip.setText(prefs.getFloat("fakeTrip", 0f).toString())
-
-        findViewById<Button>(R.id.btnSaveDemo).setOnClickListener {
-            prefs.edit {
-                putFloat("fakeSpeed", etFakeSpeed.text.toString().toFloatOrNull() ?: 0f)
-                putFloat("fakeOdometer", etFakeOdometer.text.toString().toFloatOrNull() ?: 0f)
-                putFloat("fakeTrip", etFakeTrip.text.toString().toFloatOrNull() ?: 0f)
-            }
-            Toast.makeText(this, "Demo values saved", Toast.LENGTH_SHORT).show()
+        findViewById<Button>(R.id.btnResetOdo).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.reset_odometer)
+                .setMessage(R.string.confirm_reset_odometer)
+                .setPositiveButton(R.string.yes) { _, _ -> prefs.edit { putFloat("totalOdometer", 0f) } }
+                .setNegativeButton(R.string.no, null)
+                .show()
         }
 
-        findViewById<TextView>(R.id.tvVersion).setOnClickListener {
+        findViewById<Button>(R.id.btnFullReset).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.full_app_reset)
+                .setMessage(R.string.confirm_full_reset)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    prefs.edit { clear() }
+                    startActivity(Intent(this, OnboardingActivity::class.java))
+                    finishAffinity()
+                }
+                .setNegativeButton(R.string.no, null)
+                .show()
+        }
+
+        // Updater
+        val layoutUpdater = findViewById<View>(R.id.layoutUpdater)
+        if (prefs.getBoolean("disableUpdater", false)) {
+            layoutUpdater.visibility = View.GONE
+        } else {
+            val tvBranch = findViewById<TextView>(R.id.tvUpdaterBranch)
+            val isDev = prefs.getBoolean("useDeveloperBranch", false)
+            tvBranch.text = if (isDev) "Branch: developer" else "Branch: main"
+            
+            findViewById<Button>(R.id.btnCheckUpdate).setOnClickListener {
+                checkUpdates(isDev)
+            }
+        }
+
+        val tvVersion = findViewById<TextView>(R.id.tvSettingsVersion)
+        tvVersion.setOnClickListener {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastClickTime < 500) clickCount++ else clickCount = 1
             lastClickTime = currentTime
@@ -187,11 +194,58 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkUpdates(devBranch: Boolean) {
+        val currentVersion = 3.0
+        thread {
+            try {
+                val url = URL("https://api.github.com/repos/MCI49312/FoxBike/releases" + if (devBranch) "" else "/latest")
+                val conn = url.openConnection() as HttpURLConnection
+                val response = conn.inputStream.bufferedReader().readText()
+                
+                val latestVersion: Double
+                val downloadUrl: String
+                
+                if (devBranch) {
+                    val releases = JSONArray(response)
+                    val latest = releases.getJSONObject(0)
+                    latestVersion = latest.getString("tag_name").replace(Regex("[^0-9.]"), "").toDoubleOrNull() ?: 0.0
+                    downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                } else {
+                    val latest = JSONObject(response)
+                    latestVersion = latest.getString("tag_name").replace(Regex("[^0-9.]"), "").toDoubleOrNull() ?: 0.0
+                    downloadUrl = latest.getJSONArray("assets").getJSONObject(0).getString("browser_download_url")
+                }
+
+                runOnUiThread {
+                    if (latestVersion > currentVersion) {
+                        showUpdateDialog(latestVersion, downloadUrl)
+                    } else {
+                        Toast.makeText(this, R.string.no_update, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread { Toast.makeText(this, "Update check failed", Toast.LENGTH_SHORT).show() }
+            }
+        }
+    }
+
+    private fun showUpdateDialog(version: Double, url: String) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available)
+            .setMessage("Version $version is available.")
+            .setPositiveButton(R.string.install_update) { _, _ ->
+                Toast.makeText(this, R.string.downloading, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
     private fun updateLocale(lang: String) {
         val locale = Locale(lang)
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
+        @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
     }
 
@@ -204,62 +258,48 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 val code = input.text.toString()
                 val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
-                if (code == "1900") {
-                    prefs.edit { putBoolean("demoMode", true) }
-                    Toast.makeText(this, R.string.demo_mode_enabled, Toast.LENGTH_SHORT).show()
-                    findViewById<LinearLayout>(R.id.layoutDemoMode).visibility = View.VISIBLE
-                } else if (code == "1901") {
-                    prefs.edit { putBoolean("demoMode", false) }
-                    Toast.makeText(this, R.string.demo_mode_disabled, Toast.LENGTH_SHORT).show()
-                    findViewById<LinearLayout>(R.id.layoutDemoMode).visibility = View.GONE
+                when (code) {
+                    "1900" -> {
+                        prefs.edit { putBoolean("demoMode", true) }
+                        Toast.makeText(this, R.string.demo_mode_enabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1901" -> {
+                        prefs.edit { putBoolean("demoMode", false) }
+                        Toast.makeText(this, R.string.demo_mode_disabled, Toast.LENGTH_SHORT).show()
+                    }
+                    "1902" -> {
+                        showSetOdometerDialog()
+                    }
+                    "1903" -> {
+                        prefs.edit { putFloat("totalOdometer", 0f) }
+                        Toast.makeText(this, R.string.reset_odometer, Toast.LENGTH_SHORT).show()
+                    }
+                    "1904" -> {
+                        val isDev = !prefs.getBoolean("useDeveloperBranch", false)
+                        prefs.edit { putBoolean("useDeveloperBranch", isDev) }
+                        Toast.makeText(this, getString(R.string.branch_switched, if (isDev) "developer" else "main"), Toast.LENGTH_SHORT).show()
+                        recreate()
+                    }
                 }
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
-    private class CityAutocompleteAdapter(context: Context) : ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line), Filterable {
-        private var results: List<String> = arrayListOf()
-
-        override fun getCount(): Int = results.size
-        override fun getItem(index: Int): String? = if (index < results.size) results[index] else null
-
-        override fun getFilter(): Filter {
-            return object : Filter() {
-                override fun performFiltering(constraint: CharSequence?): FilterResults {
-                    val filterResults = FilterResults()
-                    if (constraint != null) {
-                        results = fetchCitySuggestions(constraint.toString())
-                        filterResults.values = results
-                        filterResults.count = results.size
-                    }
-                    return filterResults
-                }
-
-                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged()
-                    } else {
-                        notifyDataSetInvalidated()
-                    }
-                }
+    private fun showSetOdometerDialog() {
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        input.hint = "Value in km"
+        AlertDialog.Builder(this)
+            .setTitle("Set Odometer")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val value = input.text.toString().toFloatOrNull() ?: 0f
+                val prefs = getSharedPreferences("FoxBikePrefs", Context.MODE_PRIVATE)
+                prefs.edit { putFloat("totalOdometer", value * 1000f) }
+                Toast.makeText(this, "Odometer set to $value km", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        private fun fetchCitySuggestions(query: String): List<String> {
-            val list = mutableListOf<String>()
-            try {
-                val url = URL("https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=5")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.setRequestProperty("User-Agent", "FoxBike-Android-App")
-                val response = conn.inputStream.bufferedReader().readText()
-                val jsonArray = JSONArray(response)
-                for (i in 0 until jsonArray.length()) {
-                    val obj = jsonArray.getJSONObject(i)
-                    list.add(obj.getString("display_name"))
-                }
-            } catch (e: Exception) {}
-            return list
-        }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 }

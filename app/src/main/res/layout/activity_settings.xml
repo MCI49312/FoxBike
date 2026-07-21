@@ -29,166 +29,155 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/language"
-                android:layout_marginTop="8dp"/>
+                android:textColor="#888888"
+                android:textSize="12sp" />
             <Spinner
                 android:id="@+id/spinnerLanguage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"/>
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/units"
-                android:layout_marginTop="8dp"/>
-            <Spinner
-                android:id="@+id/spinnerUnits"
+                android:text="@string/edit_name"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+            <EditText
+                android:id="@+id/etSettingsName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"/>
+                android:hint="@string/enter_name"
+                android:inputType="textPersonName"
+                android:autofillHints="name"
+                android:layout_marginBottom="16dp" />
 
-            <CheckBox
-                android:id="@+id/cbUseMaps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/use_maps_beta"
-                android:layout_marginBottom="8dp"/>
-
-            <CheckBox
-                android:id="@+id/cbVoiceFeedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/voice_feedback"
-                android:layout_marginBottom="8dp"/>
-
-            <CheckBox
-                android:id="@+id/cbServiceReminder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/service_reminder"
-                android:layout_marginBottom="4dp"/>
-
-            <Button
-                android:id="@+id/btnServiceSettings"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/service_settings"
-                android:layout_marginBottom="8dp" />
+                android:text="@string/edit_vehicle"
+                android:textColor="#888888"
+                android:textSize="12sp" />
+            <Spinner
+                android:id="@+id/spinnerSettingsVehicle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
 
-            <CheckBox
-                android:id="@+id/cbDarkMode"
+            <EditText
+                android:id="@+id/etSettingsWeight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dark_mode"
-                android:layout_marginBottom="8dp"/>
+                android:hint="@string/weight"
+                android:inputType="numberDecimal"
+                android:autofillHints="none"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutUpdater"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:background="?android:attr/colorBackgroundFloating"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvUpdaterBranch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Branch: main"
+                    android:textSize="12sp"
+                    android:textColor="#888888"/>
+
+                <Button
+                    android:id="@+id/btnCheckUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/check_updates"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/weather_location"
-                android:layout_marginTop="8dp"/>
+                android:textColor="#888888"
+                android:textSize="12sp" />
             <AutoCompleteTextView
-                android:id="@+id/etWeatherLocation"
+                android:id="@+id/etSettingsWeatherLoc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/weather_location"
                 android:inputType="text"
                 android:completionThreshold="1"
-                android:hint="Budapest" />
+                android:layout_marginBottom="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/wind_unit"
-                android:layout_marginTop="8dp"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <Spinner
+                    android:id="@+id/spinnerTempUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <Spinner
+                    android:id="@+id/spinnerWindUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
             <Spinner
-                android:id="@+id/spinnerWindUnits"
+                android:id="@+id/spinnerDistanceUnit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/weight"
-                android:layout_marginTop="8dp"/>
-            <EditText
-                android:id="@+id/etWeight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:hint="70" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/no_telemetry_note"
-                android:textSize="12sp"
-                android:textColor="#888888"
-                android:layout_marginBottom="16dp"/>
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp" />
 
             <Button
-                android:id="@+id/btnResetOdometer"
+                android:id="@+id/btnSwitchUI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/use_old_ui"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/btnResetOdo"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/reset_odometer"
-                android:layout_marginBottom="16dp"/>
+                android:textColor="#FF0000"
+                app:strokeColor="#FF0000"
+                android:layout_marginBottom="8dp" />
 
-            <LinearLayout
-                android:id="@+id/layoutDemoMode"
+            <Button
+                android:id="@+id/btnFullReset"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:text="@string/full_app_reset"
+                android:textColor="#FF0000"
+                app:strokeColor="#FF0000"
+                android:layout_marginBottom="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DEMO MODE SETTINGS"
-                    android:textStyle="bold"
-                    android:textColor="#FF0000"
-                    android:layout_marginTop="16dp"/>
-
-                <EditText
-                    android:id="@+id/etFakeSpeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/fake_speed"
-                    android:inputType="numberDecimal"/>
-
-                <EditText
-                    android:id="@+id/etFakeOdometer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/fake_odometer"
-                    android:inputType="numberDecimal"/>
-
-                <EditText
-                    android:id="@+id/etFakeTrip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/fake_trip"
-                    android:inputType="numberDecimal"/>
-
-                <Button
-                    android:id="@+id/btnSaveDemo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/save"/>
-            </LinearLayout>
-
-            <View
+            <Button
+                android:id="@+id/btnExportGpx"
                 android:layout_width="match_parent"
-                android:layout_height="24dp" />
+                android:layout_height="wrap_content"
+                android:text="@string/export_gpx"
+                android:layout_marginBottom="24dp" />
 
             <TextView
-                android:id="@+id/tvVersion"
+                android:id="@+id/tvSettingsVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/version"
